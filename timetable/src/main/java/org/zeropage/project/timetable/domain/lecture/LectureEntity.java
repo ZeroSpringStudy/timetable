@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.zeropage.project.timetable.wizardoptions.Lecture;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public abstract class LectureEntity {
+public abstract class LectureEntity implements Lecture {
     @Id
     @GeneratedValue
     private Long id;
@@ -25,7 +26,7 @@ public abstract class LectureEntity {
 
 
     /**
-     * Get credit of subject(lecture). If subject is customed, then it returns 0.
+     * Get credit of lecture. If lecture is customed, then it returns 0.
      */
     public int getCredit(){
         return 0;
@@ -47,7 +48,7 @@ public abstract class LectureEntity {
      *
      * Always returns false least one of lecture is customed.
      */
-    public boolean equalsByNameAndType(LectureEntity lecture){
+    public boolean equalsByNameAndType(Lecture lecture){
         return this instanceof EnrolledLecture &&
                 lecture instanceof EnrolledLecture &&
                 this.getName().equals(lecture.getName());
