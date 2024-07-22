@@ -22,12 +22,14 @@ public class EnrolledLecture extends LectureEntity {
 
     /**
      * It is float because 0.5 credit is possible.
+     * Also possible to save doubled value for int.
      */
     @Column(nullable = false, updatable = false)
     private float credit;
 
     /**
      * Grade 0 means "all".
+     * Range of values: 0~6
      */
     @Column(nullable = false, updatable = false)
     private int grade;
@@ -46,13 +48,14 @@ public class EnrolledLecture extends LectureEntity {
 
     /**
      * 과목번호
+     * Unsigned int that don't exceed 60000.
      */
     @Column(nullable = false, updatable = false)
     private int lectureCode;
 
     /**
      * 분반
-     * default value is for forgetting to put this by staff because there is only one lecture.
+     * Range of values: 1~74 (for this semester. doesn't exceed 99 in all semesters.)
      */
     @Column(nullable = false, updatable = false)
     private int lectureSection;
@@ -61,7 +64,7 @@ public class EnrolledLecture extends LectureEntity {
     private Classification classification;
     @Enumerated(EnumType.STRING)
     private CourseType courseType;
-    @Column(nullable = true, length = 48) // Unexpected longest but it cannot be too long.
+    @Column(nullable = true, length = 64) // Longest unexpected but it cannot be too long.
     private String lecturer;
 
     @Lob // Can be too long to save by varchar.
@@ -89,20 +92,23 @@ public class EnrolledLecture extends LectureEntity {
 
     /**
      * Uses to check lecture from two or more different dept are same each other.
-     * They are same lecture, but in many depts to let many students of various depts register.
      */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof EnrolledLecture that)) return false;
-        return getLectureCode() == that.getLectureCode() &&
-                getLectureSection() == that.getLectureSection() &&
-                Objects.equals(getCollege(), that.getCollege()) &&
-                Objects.equals(getDept(), that.getDept());
+        if (!(o instanceof EnrolledLecture lecture)) return false;
+        return Float.compare(lecture.getCredit(), getCredit()) == 0 &&
+                getGrade() == lecture.getGrade() &&
+                getLectureCode() == lecture.getLectureCode() &&
+                getLectureSection() == lecture.getLectureSection() &&
+                getClassification() == lecture.getClassification() &&
+                getCourseType() == lecture.getCourseType() &&
+                Objects.equals(getLecturer(), lecture.getLecturer()) &&
+                Objects.equals(getRemark(), lecture.getRemark());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getCollege(), getDept(), getLectureCode(), getLectureSection());
+        return Objects.hash(getCredit(), getGrade(), getLectureCode(), getLectureSection(), getClassification(), getCourseType(), getLecturer(), getRemark());
     }
 }
