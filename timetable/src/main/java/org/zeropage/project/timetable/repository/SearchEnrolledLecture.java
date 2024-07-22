@@ -1,8 +1,9 @@
-package org.zeropage.project.timetable.wizardoptions;
+package org.zeropage.project.timetable.repository;
 
 import lombok.Data;
 import org.zeropage.project.timetable.domain.lecture.Classification;
 import org.zeropage.project.timetable.domain.lecture.EnrolledLecture;
+import org.zeropage.project.timetable.wizardoptions.TimeSearchMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,13 +14,13 @@ public class SearchEnrolledLecture {
     private String dept;
     private String name;
     private String lecturer;
-    private int lectureCode;
+    private Integer lectureCode;
     // private int lectureSection;
-    private List<Classification> classification = new ArrayList<>();
+    private List<Classification> classification;
     // private List<CourseType> courseType;
-    private float credit;
-    private int grade;
-    private List<Integer> classHours = new ArrayList<>();
+    private Float credit;
+    private Integer grade;
+    private List<Integer> classHours;
 
     /**
      * Select mode searching classHours,
@@ -27,6 +28,19 @@ public class SearchEnrolledLecture {
      * or to search all lectures at least overlaped by set classhours.
      */
     private TimeSearchMode classHoursMode;
+
+    public SearchEnrolledLecture() {
+        this.college = "";
+        this.dept = "";
+        this.name = "";
+        this.lecturer = "";
+        this.lectureCode = null;
+        this.classification = new ArrayList<>();
+        this.credit = null;
+        this.grade = null;
+        this.classHours = new ArrayList<>();
+        this.classHoursMode = TimeSearchMode.COVER;
+    }
 
     /**
      * Search with options.

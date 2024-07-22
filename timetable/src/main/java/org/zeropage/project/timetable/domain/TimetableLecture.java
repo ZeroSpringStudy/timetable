@@ -3,10 +3,12 @@ package org.zeropage.project.timetable.domain;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.zeropage.project.timetable.domain.lecture.LectureEntity;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString //For test.
 public class TimetableLecture {
     @Id
     @GeneratedValue

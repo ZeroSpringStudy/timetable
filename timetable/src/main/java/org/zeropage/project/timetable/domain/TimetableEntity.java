@@ -3,10 +3,12 @@ package org.zeropage.project.timetable.domain;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 
 @Entity
+@ToString //For test.
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TimetableEntity {
     @Id

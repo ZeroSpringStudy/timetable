@@ -12,7 +12,7 @@ public interface Lecture {
     /**
      * Get credit of subject(lecture). Lecture is customed, so it returns 0.
      */
-    int getCredit();
+    float getCredit();
 
     /**
      * If two lectures are all enrolled by school and name is same,

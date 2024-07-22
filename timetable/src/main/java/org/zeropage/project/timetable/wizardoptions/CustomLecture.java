@@ -21,8 +21,8 @@ public class CustomLecture implements Lecture{
     /**
      * Get credit of subject(lecture). Lecture is customed, so it returns 0.
      */
-    public int getCredit(){
-        return 0;
+    public float getCredit(){
+        return 0F;
     }
 
     /**
