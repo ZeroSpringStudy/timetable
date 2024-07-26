@@ -12,17 +12,22 @@ import java.util.Objects;
 
 /**
  * Lecture already enrolled by school
+ * 학교에서 등록한 강의
  */
 @Entity
 @DiscriminatorValue("L")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@ToString(callSuper = true) //For test.
-public class EnrolledLecture extends LectureEntity {
+@ToString(callSuper = true) //For test. 테스트용
+public class EnrolledLecture extends Lecture {
 
     /**
-     * It is float because 0.5 credit is possible.
+     * It is float because 0.5 credit lecture exists.
      * Also possible to save doubled value for int.
+     * Avaliable values: 0.5, 1, 2, 3, 4, 4.5, 5, 6, 6.5, 8, 9, 10
+     * 0.5학점 강의가 존재해 float으로 설정함.
+     * 원래 학점에서 2를 곱하여 정수로 저장하는 것 또한 가능
+     * 가능한 값: 0.5, 1, 2, 3, 4, 4.5, 5, 6, 6.5, 8, 9, 10
      */
     @Column(nullable = false, updatable = false)
     private float credit;
@@ -30,18 +35,22 @@ public class EnrolledLecture extends LectureEntity {
     /**
      * Grade 0 means "all".
      * Range of values: 0~6
+     * 0은 전체를 의미함.
+     * 값의 범위: 0~6
      */
     @Column(nullable = false, updatable = false)
     private int grade;
 
     /**
      * College where holding lecture
+     * 대학(원)/교양/연계/융합
      */
     @Column(nullable = false, length = 42) // longest: 적십자간호대학(2011)
     private String college;
 
     /**
      * Department of college where holding lecture
+     * 학부(과)/전공/영역
      */
     @Column(nullable = false, length = 48) // longest: 게임·인터렉티브미디어융합전공
     private String dept;
@@ -49,6 +58,7 @@ public class EnrolledLecture extends LectureEntity {
     /**
      * 과목번호
      * Unsigned int that don't exceed 60000.
+     * 60000을 넘지 않는 양의 정수
      */
     @Column(nullable = false, updatable = false)
     private int lectureCode;
@@ -56,6 +66,7 @@ public class EnrolledLecture extends LectureEntity {
     /**
      * 분반
      * Range of values: 1~74 (for this semester. doesn't exceed 99 in all semesters.)
+     * 값의 범위: 1~74 (이번 학기에는. 모든 학기에서 99를 넘지는 않음)
      */
     @Column(nullable = false, updatable = false)
     private int lectureSection;
@@ -71,7 +82,8 @@ public class EnrolledLecture extends LectureEntity {
     private String remark;
 
     /**
-     * Test only. Not for real use.
+     * Not for user to use. Only for staff.
+     * 관리용. 사용자가 사용하라고 만든 것이 아님.
      */
     public EnrolledLecture(String name, List<Integer> classHours, float credit, int grade,
                            String college, String dept, int lectureCode, int lectureSection,
@@ -92,6 +104,7 @@ public class EnrolledLecture extends LectureEntity {
 
     /**
      * Uses to check lecture from two or more different dept are same each other.
+     * 다른 학과/학부에서 열린 두 강의가 같은지 확인할 때 사용.
      */
     @Override
     public boolean equals(Object o) {

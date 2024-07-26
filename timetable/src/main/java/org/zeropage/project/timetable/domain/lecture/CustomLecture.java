@@ -10,12 +10,13 @@ import java.util.List;
 
 /**
  * Lecture that customed by member
+ * 사용자가 직접 만든 강의(일정)
  */
 @Entity
 @DiscriminatorValue("C")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CustomLectureEntity extends LectureEntity{
-    public CustomLectureEntity(Long id, String name, List<Integer> classHours) {
-        super(id, name, classHours);
+public class CustomLecture extends Lecture{
+    public CustomLecture(String name, List<Integer> classHours) {
+        super(null, name, classHours);
     }
 }

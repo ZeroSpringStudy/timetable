@@ -8,7 +8,7 @@ import lombok.ToString;
 import java.util.List;
 
 @Entity
-@ToString //For test.
+@ToString //For test. 테스트용
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TimetableEntity {
     @Id
@@ -21,6 +21,7 @@ public class TimetableEntity {
 
     /**
      * Key that cannot change but can see. Uses when user shares their timetable.
+     * 변경은 불가하나 볼 수는 있는 key. 시간표를 공유할 때 사용.
      */
     private String viewOnlyKey;
 

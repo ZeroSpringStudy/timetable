@@ -1,12 +1,14 @@
 package org.zeropage.project.timetable.wizardoptions;
 
 import lombok.Data;
+import org.zeropage.project.timetable.domain.lecture.Lecture;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Group of lectures. Uses in wizard.
+ * 강의의 집합. 시간표 마법사에 사용.
  */
 @Data
 public class LectureGroup {

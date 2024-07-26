@@ -1,6 +1,5 @@
 package org.zeropage.project.timetable.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zeropage.project.timetable.domain.lecture.Classification;
 import org.zeropage.project.timetable.domain.lecture.CourseType;
 import org.zeropage.project.timetable.domain.lecture.EnrolledLecture;
-import org.zeropage.project.timetable.domain.lecture.LectureEntity;
-import org.zeropage.project.timetable.repository.LectureEntityRepository;
+import org.zeropage.project.timetable.domain.lecture.Lecture;
+import org.zeropage.project.timetable.repository.LectureRepository;
 import org.zeropage.project.timetable.repository.SearchEnrolledLecture;
 
 import java.util.ArrayList;
@@ -23,14 +22,15 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 
 /**
  * IMPORTANT: Persist all data by persistDefaultLectureData() before testing, or it will fail.
+ * 주의: 테스트 전 persistDefaultLectureData() 메서드를 이용해 데이터를 넣을 것, 아니면 테스트는 실패함.
  */
 @SpringBootTest
 @Transactional
-public class LectureEntityServiceTest {
+public class LectureServiceTest {
     @Autowired
-    LectureEntityService lectureEntityService;
+    LectureService lectureService;
     @Autowired
-    LectureEntityRepository lectureEntityRepository;
+    LectureRepository lectureRepository;
 
     @DisplayName("Search Enrolled Lecture by name.")
     @Test
@@ -38,10 +38,10 @@ public class LectureEntityServiceTest {
     void searchEnrolledLectureByName(){
         SearchEnrolledLecture searchOptions = new SearchEnrolledLecture();
         searchOptions.setName("객체지향프로그래밍");
-        List<LectureEntity> searchResult = lectureEntityService.search(searchOptions);
+        List<Lecture> searchResult = lectureService.search(searchOptions);
         assertEquals(2,searchResult.size());
-        assertSame(lectureEntityRepository.findOne(2L),searchResult.get(0));
-        assertSame(lectureEntityRepository.findOne(3L),searchResult.get(1));
+        assertSame(lectureRepository.findOne(2L),searchResult.get(0));
+        assertSame(lectureRepository.findOne(3L),searchResult.get(1));
         printResult(searchResult);
     }
 
@@ -51,11 +51,11 @@ public class LectureEntityServiceTest {
     void searchEnrolledLectureByCollege(){
         SearchEnrolledLecture searchOptions = new SearchEnrolledLecture();
         searchOptions.setCollege("교양");
-        List<LectureEntity> searchResult = lectureEntityService.search(searchOptions);
+        List<Lecture> searchResult = lectureService.search(searchOptions);
         assertEquals(3,searchResult.size());
-        assertSame(lectureEntityRepository.findOne(1L),searchResult.get(0));
-        assertSame(lectureEntityRepository.findOne(4L),searchResult.get(1));
-        assertSame(lectureEntityRepository.findOne(11L),searchResult.get(2));
+        assertSame(lectureRepository.findOne(1L),searchResult.get(0));
+        assertSame(lectureRepository.findOne(4L),searchResult.get(1));
+        assertSame(lectureRepository.findOne(11L),searchResult.get(2));
         printResult(searchResult);
     }
 
@@ -66,10 +66,10 @@ public class LectureEntityServiceTest {
         SearchEnrolledLecture searchOptions = new SearchEnrolledLecture();
         searchOptions.setCollege("창의ICT공과대학");
         searchOptions.setDept("전자전기공학부");
-        List<LectureEntity> searchResult = lectureEntityService.search(searchOptions);
+        List<Lecture> searchResult = lectureService.search(searchOptions);
         assertEquals(2,searchResult.size());
-        assertSame(lectureEntityRepository.findOne(3L),searchResult.get(0));
-        assertSame(lectureEntityRepository.findOne(10L),searchResult.get(1));
+        assertSame(lectureRepository.findOne(3L),searchResult.get(0));
+        assertSame(lectureRepository.findOne(10L),searchResult.get(1));
         printResult(searchResult);
     }
 
@@ -79,9 +79,9 @@ public class LectureEntityServiceTest {
     void searchEnrolledLectureByLecturer(){
         SearchEnrolledLecture searchOptions = new SearchEnrolledLecture();
         searchOptions.setLecturer("김민진");
-        List<LectureEntity> searchResult = lectureEntityService.search(searchOptions);
+        List<Lecture> searchResult = lectureService.search(searchOptions);
         assertEquals(1,searchResult.size());
-        assertSame(lectureEntityRepository.findOne(6L),searchResult.get(0));
+        assertSame(lectureRepository.findOne(6L),searchResult.get(0));
         printResult(searchResult);
     }
 
@@ -91,10 +91,10 @@ public class LectureEntityServiceTest {
     void searchEnrolledLectureByLectureCode(){
         SearchEnrolledLecture searchOptions = new SearchEnrolledLecture();
         searchOptions.setLectureCode(49156);
-        List<LectureEntity> searchResult = lectureEntityService.search(searchOptions);
+        List<Lecture> searchResult = lectureService.search(searchOptions);
         assertEquals(2,searchResult.size());
-        assertSame(lectureEntityRepository.findOne(2L),searchResult.get(0));
-        assertSame(lectureEntityRepository.findOne(3L),searchResult.get(1));
+        assertSame(lectureRepository.findOne(2L),searchResult.get(0));
+        assertSame(lectureRepository.findOne(3L),searchResult.get(1));
         printResult(searchResult);
     }
 
@@ -104,16 +104,16 @@ public class LectureEntityServiceTest {
     void searchEnrolledLectureByCredit(){
         SearchEnrolledLecture searchOptions = new SearchEnrolledLecture();
         searchOptions.setCredit(3F);
-        List<LectureEntity> searchResult = lectureEntityService.search(searchOptions);
+        List<Lecture> searchResult = lectureService.search(searchOptions);
         assertEquals(8,searchResult.size());
-        assertSame(lectureEntityRepository.findOne(2L),searchResult.get(0));
-        assertSame(lectureEntityRepository.findOne(3L),searchResult.get(1));
-        assertSame(lectureEntityRepository.findOne(4L),searchResult.get(2));
-        assertSame(lectureEntityRepository.findOne(5L),searchResult.get(3));
-        assertSame(lectureEntityRepository.findOne(8L),searchResult.get(4));
-        assertSame(lectureEntityRepository.findOne(9L),searchResult.get(5));
-        assertSame(lectureEntityRepository.findOne(10L),searchResult.get(6));
-        assertSame(lectureEntityRepository.findOne(11L),searchResult.get(7));
+        assertSame(lectureRepository.findOne(2L),searchResult.get(0));
+        assertSame(lectureRepository.findOne(3L),searchResult.get(1));
+        assertSame(lectureRepository.findOne(4L),searchResult.get(2));
+        assertSame(lectureRepository.findOne(5L),searchResult.get(3));
+        assertSame(lectureRepository.findOne(8L),searchResult.get(4));
+        assertSame(lectureRepository.findOne(9L),searchResult.get(5));
+        assertSame(lectureRepository.findOne(10L),searchResult.get(6));
+        assertSame(lectureRepository.findOne(11L),searchResult.get(7));
         printResult(searchResult);
     }
 
@@ -123,12 +123,12 @@ public class LectureEntityServiceTest {
     void searchEnrolledLectureByGrade(){
         SearchEnrolledLecture searchOptions = new SearchEnrolledLecture();
         searchOptions.setGrade(2);
-        List<LectureEntity> searchResult = lectureEntityService.search(searchOptions);
+        List<Lecture> searchResult = lectureService.search(searchOptions);
         assertEquals(4,searchResult.size());
-        assertSame(lectureEntityRepository.findOne(2L),searchResult.get(0));
-        assertSame(lectureEntityRepository.findOne(3L),searchResult.get(1));
-        assertSame(lectureEntityRepository.findOne(8L),searchResult.get(2));
-        assertSame(lectureEntityRepository.findOne(9L),searchResult.get(3));
+        assertSame(lectureRepository.findOne(2L),searchResult.get(0));
+        assertSame(lectureRepository.findOne(3L),searchResult.get(1));
+        assertSame(lectureRepository.findOne(8L),searchResult.get(2));
+        assertSame(lectureRepository.findOne(9L),searchResult.get(3));
         printResult(searchResult);
     }
 
@@ -141,12 +141,12 @@ public class LectureEntityServiceTest {
                 Classification.MAJOR,
                 Classification.REQUIRED_MAJOR
         ));
-        List<LectureEntity> searchResult = lectureEntityService.search(searchOptions);
+        List<Lecture> searchResult = lectureService.search(searchOptions);
         assertEquals(4,searchResult.size());
-        assertSame(lectureEntityRepository.findOne(2L),searchResult.get(0));
-        assertSame(lectureEntityRepository.findOne(3L),searchResult.get(1));
-        assertSame(lectureEntityRepository.findOne(8L),searchResult.get(2));
-        assertSame(lectureEntityRepository.findOne(9L),searchResult.get(3));
+        assertSame(lectureRepository.findOne(2L),searchResult.get(0));
+        assertSame(lectureRepository.findOne(3L),searchResult.get(1));
+        assertSame(lectureRepository.findOne(8L),searchResult.get(2));
+        assertSame(lectureRepository.findOne(9L),searchResult.get(3));
         printResult(searchResult);
     }
 
@@ -158,9 +158,9 @@ public class LectureEntityServiceTest {
         searchOptions.setCollege("소프트웨어대학");
         searchOptions.setDept("소프트웨어학부");
         searchOptions.setName("객체지향프로그래밍");
-        List<LectureEntity> searchResult = lectureEntityService.search(searchOptions);
+        List<Lecture> searchResult = lectureService.search(searchOptions);
         assertEquals(1,searchResult.size());
-        assertSame(lectureEntityRepository.findOne(2L),searchResult.get(0));
+        assertSame(lectureRepository.findOne(2L),searchResult.get(0));
         printResult(searchResult);
     }
 
@@ -171,9 +171,9 @@ public class LectureEntityServiceTest {
         SearchEnrolledLecture searchOptions = new SearchEnrolledLecture();
         searchOptions.setClassification(List.of(Classification.MAJOR));
         searchOptions.setLecturer("김수진");
-        List<LectureEntity> searchResult = lectureEntityService.search(searchOptions);
+        List<Lecture> searchResult = lectureService.search(searchOptions);
         assertEquals(1,searchResult.size());
-        assertSame(lectureEntityRepository.findOne(8L),searchResult.get(0));
+        assertSame(lectureRepository.findOne(8L),searchResult.get(0));
         printResult(searchResult);
     }
 
@@ -191,10 +191,10 @@ public class LectureEntityServiceTest {
         ));
         searchOptions.setLectureCode(49156);
         searchOptions.setGrade(2);
-        List<LectureEntity> searchResult = lectureEntityService.search(searchOptions);
+        List<Lecture> searchResult = lectureService.search(searchOptions);
         assertEquals(2,searchResult.size());
-        assertSame(lectureEntityRepository.findOne(2L),searchResult.get(0));
-        assertSame(lectureEntityRepository.findOne(3L),searchResult.get(1));
+        assertSame(lectureRepository.findOne(2L),searchResult.get(0));
+        assertSame(lectureRepository.findOne(3L),searchResult.get(1));
         printResult(searchResult);
     }
 
@@ -217,14 +217,14 @@ public class LectureEntityServiceTest {
                 Classification.BASIC_MAJOR,
                 Classification.ELECTIVE
         ));
-        List<LectureEntity> searchResult = lectureEntityService.search(searchOptions);
+        List<Lecture> searchResult = lectureService.search(searchOptions);
         assertEquals(1,searchResult.size());
-        assertSame(lectureEntityRepository.findOne(6L),searchResult.get(0));
+        assertSame(lectureRepository.findOne(6L),searchResult.get(0));
         printResult(searchResult);
     }
 
-    private void printResult(List<LectureEntity> result){
-        for(LectureEntity lecture:result){
+    private void printResult(List<Lecture> result){
+        for(Lecture lecture:result){
             System.out.println(lecture);
         }
     }
@@ -232,6 +232,8 @@ public class LectureEntityServiceTest {
     /**
      * Save lecture data to test.
      * It must be done before test, or error will be occured.
+     * 테스트를 위해 데이터를 저장함.
+     * 테스트 이전에 진행하지 않으면 에러 발생.
      */
     private void persistDefaultLectureData(){
         List<EnrolledLecture> defaultLectures = new ArrayList<>();
@@ -393,7 +395,7 @@ public class LectureEntityServiceTest {
         )); //12
 
         for(EnrolledLecture lecture:defaultLectures){
-            lectureEntityRepository.save(lecture);
+            lectureRepository.save(lecture);
         }
     }
 }

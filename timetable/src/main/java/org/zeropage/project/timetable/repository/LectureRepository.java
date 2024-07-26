@@ -5,36 +5,40 @@ import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
-import org.zeropage.project.timetable.domain.lecture.LectureEntity;
+import org.zeropage.project.timetable.domain.lecture.Lecture;
 
 import java.util.List;
 
 /**
  * Can be replaced to interface which extends JPARepository&lt;LectureEntity, Long&gt;
+ * JPARepository&lt;LectureEntity, Long&gt;를 상속한 인터페이스로 변경될 수 있음.
  */
 @Repository
 @RequiredArgsConstructor
-public class LectureEntityRepository {
+public class LectureRepository {
     private final EntityManager em;
 
-    public LectureEntity save(LectureEntity lectureEntity){
-        em.persist(lectureEntity);
-        return lectureEntity;
+    public Lecture save(Lecture lecture){
+        em.persist(lecture);
+        return lecture;
     }
 
     /**
-     * Test only. Not for real use.
+     * Not for user to use. Only for staff.
+     * 관리용. 사용자가 사용하라고 만든 것이 아님.
      */
-    public LectureEntity findOne(Long id){
-        return em.find(LectureEntity.class, id);
+    public Lecture findOne(Long id){
+        return em.find(Lecture.class, id);
     }
 
     /**
      * Search enrolled lectures by options.
      * Set of options are saved in SearchEnrolledLecture class.
+     * 검색조건에 따라 학교에서 등록한 강의를 검색함.
+     * 검색조건은 SearchEnrolledLecture class에 저장되어 있음.
      */
-    public List<LectureEntity> find(SearchEnrolledLecture options){
-        String jpql = "select l from LectureEntity l where type(l) in (EnrolledLecture)";
+    public List<Lecture> find(SearchEnrolledLecture options){
+        String jpql = "select l from Lecture l where type(l) in (EnrolledLecture)";
 
         if (StringUtils.hasText(options.getCollege()))
             jpql+=" and treat(l as EnrolledLecture).college=:college";
@@ -52,9 +56,9 @@ public class LectureEntityRepository {
             jpql += " and treat(l as EnrolledLecture).grade=:grade";
         if (options.getClassification().size() != 0)
             jpql += " and treat(l as EnrolledLecture).classification in :classification";
-        // Need query for time search.
+        // TODO Need query for time search.
 
-        TypedQuery<LectureEntity> query = em.createQuery(jpql, LectureEntity.class);
+        TypedQuery<Lecture> query = em.createQuery(jpql, Lecture.class);
 
         if (StringUtils.hasText(options.getCollege()))
             query = query.setParameter("college", options.getCollege());
@@ -72,7 +76,7 @@ public class LectureEntityRepository {
             query = query.setParameter("grade", options.getGrade());
         if (options.getClassification().size() != 0)
             query = query.setParameter("classification", options.getClassification());
-        // Need query for time search.
+        // TODO Need query for time search.
 
         return query.getResultList();
     }
