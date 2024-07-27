@@ -2,7 +2,7 @@ package org.zeropage.project.timetable.repository;
 
 import lombok.Data;
 import org.zeropage.project.timetable.domain.lecture.Classification;
-import org.zeropage.project.timetable.domain.lecture.EnrolledLecture;
+import org.zeropage.project.timetable.domain.lecture.RegisteredLecture;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +49,7 @@ public class SearchEnrolledLecture {
      * 조건에 따라 검색함.
      * @return result of search 검색 결과
      */
-    public List<EnrolledLecture> search(){
+    public List<RegisteredLecture> search(){
         //TODO
         throw new UnsupportedOperationException(); //temporal exception 임시 예외
     }

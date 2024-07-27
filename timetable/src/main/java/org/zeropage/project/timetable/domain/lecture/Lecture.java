@@ -10,7 +10,6 @@ import java.util.List;
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "dtype")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @ToString //For test. 테스트용.
 public abstract class Lecture {
@@ -22,7 +21,7 @@ public abstract class Lecture {
     private String name;
 
     /**
-     * Save by splitting one week by 30 minutes.
+     * Save by splitting one week by 30 minutes. Split by ','.
      * 0 is Monday 00:00~00:30,
      * 1 is Monday 00:30~01:00,
      * 47 is Monday 23:30~24:00,
@@ -33,7 +32,7 @@ public abstract class Lecture {
      * 239 is Friday 23:30~24:00,
      * 287 is Saturday 23:30~24:00.
      * Didn't expected Sunday because there are no enrolled lecture on Sunday.
-     * 한 주를 30분으로 나누어 저장함.
+     * 한 주를 30분으로 나누어 저장함. ','으로 구분.
      * 0은 월요일 00:00~00:30,
      * 1은 월요일 00:30~01:00,
      * 47은 월요일 23:30~24:00,
@@ -44,9 +43,22 @@ public abstract class Lecture {
      * 239는 금요일 23:30~24:00,
      * 287은 토요일 23:30~24:00.
      * 일요일에는 강의가 없으므로 생각하지 않았음.
+     * 별도의 Entity를 쓰면 join 문제가 발생해 String으로 임시 대체
      */
-    @ElementCollection
-    private List<Integer> classHours = new ArrayList<>();
+    private String classHours;
+
+    /**
+     * 시간 저장 List버전.
+     * DB에 저장되지는 않는 Column이고, 화면 표시용으로 사용함
+     */
+    @Transient
+    private List<Integer> classHoursByList = new ArrayList<>();
+
+    public Lecture(String name, String classHours) {
+        this.id = null;
+        this.name = name;
+        this.classHours = classHours;
+    }
 
 
     /**
@@ -58,9 +70,18 @@ public abstract class Lecture {
     }
 
     public boolean isClassOverlaped(Lecture lecture){
-        ArrayList<Integer> overlapHours = new ArrayList<>(this.getClassHours());
-        overlapHours.retainAll(lecture.getClassHours());
-        return overlapHours.size() == 0;
+        ArrayList<Integer> thisHours = new ArrayList<>();
+        ArrayList<Integer> otherHours = new ArrayList<>();
+        String[] thisStr = this.getClassHours().replace(" ", "").split(",");
+        for (String time : thisStr) {
+            thisHours.add(Integer.parseInt(time));
+        }
+        String[] otherStr = lecture.getClassHours().replace(" ", "").split(",");
+        for (String time : otherStr) {
+            thisHours.add(Integer.parseInt(time));
+        }
+        thisHours.retainAll(otherHours);
+        return thisHours.size() == 0;
     }
 
 
@@ -74,8 +95,8 @@ public abstract class Lecture {
      * Always returns false least one of lecture is customed.
      */
     public boolean equalsByNameAndType(Lecture lecture){
-        return this instanceof EnrolledLecture &&
-                lecture instanceof EnrolledLecture &&
+        return this instanceof RegisteredLecture &&
+                lecture instanceof RegisteredLecture &&
                 this.getName().equals(lecture.getName());
     }
 }

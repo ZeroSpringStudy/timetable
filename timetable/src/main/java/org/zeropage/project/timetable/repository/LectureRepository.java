@@ -38,7 +38,7 @@ public class LectureRepository {
      * 검색조건은 SearchEnrolledLecture class에 저장되어 있음.
      */
     public List<Lecture> find(SearchEnrolledLecture options){
-        String jpql = "select l from Lecture l where type(l) in (EnrolledLecture)";
+        String jpql = "select l from Lecture l where type(l) in (RegisteredLecture)";
 
         if (StringUtils.hasText(options.getCollege()))
             jpql+=" and treat(l as EnrolledLecture).college=:college";

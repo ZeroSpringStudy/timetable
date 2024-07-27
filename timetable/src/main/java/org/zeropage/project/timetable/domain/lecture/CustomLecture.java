@@ -13,10 +13,10 @@ import java.util.List;
  * 사용자가 직접 만든 강의(일정)
  */
 @Entity
-@DiscriminatorValue("C")
+@DiscriminatorValue("N")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CustomLecture extends Lecture{
-    public CustomLecture(String name, List<Integer> classHours) {
-        super(null, name, classHours);
+    public CustomLecture(String name, String classHours) {
+        super(name, classHours);
     }
 }

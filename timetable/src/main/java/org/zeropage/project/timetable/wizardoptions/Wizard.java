@@ -1,6 +1,6 @@
 package org.zeropage.project.timetable.wizardoptions;
 
-import org.zeropage.project.timetable.domain.TimetableEntity;
+import org.zeropage.project.timetable.domain.Timetable;
 import org.zeropage.project.timetable.domain.lecture.CustomLecture;
 
 import java.time.DayOfWeek;
@@ -124,7 +124,7 @@ public class Wizard {
      * 설정을 기반으로 가능한 시간표를 만듦.
      * @return result of wizard 마법사 결과
      */
-    public List<TimetableEntity> result(){
+    public List<Timetable> result(){
         //TODO
         throw new UnsupportedOperationException(); //temporal exception 임시 예외
     }

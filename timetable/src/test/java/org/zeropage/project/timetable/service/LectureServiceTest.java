@@ -8,7 +8,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import org.zeropage.project.timetable.domain.lecture.Classification;
 import org.zeropage.project.timetable.domain.lecture.CourseType;
-import org.zeropage.project.timetable.domain.lecture.EnrolledLecture;
+import org.zeropage.project.timetable.domain.lecture.RegisteredLecture;
 import org.zeropage.project.timetable.domain.lecture.Lecture;
 import org.zeropage.project.timetable.repository.LectureRepository;
 import org.zeropage.project.timetable.repository.SearchEnrolledLecture;
@@ -236,165 +236,165 @@ public class LectureServiceTest {
      * 테스트 이전에 진행하지 않으면 에러 발생.
      */
     private void persistDefaultLectureData(){
-        List<EnrolledLecture> defaultLectures = new ArrayList<>();
+        List<RegisteredLecture> defaultLectures = new ArrayList<>();
 
-        defaultLectures.add(new EnrolledLecture(
+        defaultLectures.add(new RegisteredLecture(
                 "앙트레프레너십시대의회계",
-                Arrays.asList(114,115,116,117), // Wed 09:00~11:00
+                "114,115,116,117", // Wed 09:00~11:00
                 2F, 1,
                 "교양",
                 "공통교양",
                 52533, 11,
                 Classification.GENERAL_EDUCATION,
                 CourseType.NONE,
-                "박인선",
+                "박인선", "310관 726호 <강의실>",
                 "공통교양 전문교양/소프트웨어대학 1학년/정정기간 자자:공학계열 전체 학년[[수강대상 : 소프트웨어학부1년 AI학과1년]]"
         )); //1
 
-        defaultLectures.add(new EnrolledLecture(
+        defaultLectures.add(new RegisteredLecture(
                 "객체지향프로그래밍 (영어A강의)",
-                Arrays.asList(22,23,24,25,118,119), // Mon 11:00~13:00, Wed 11:00~12:00
+                "22,23,24,25,118,119", // Mon 11:00~13:00, Wed 11:00~12:00
                 3F, 2,
                 "소프트웨어대학",
                 "소프트웨어학부",
                 49156, 1,
                 Classification.MAJOR,
                 CourseType.NONE,
-                "손봉수",
+                "손봉수", "310관 728호 <강의실>",
                 "공학주제(설계2), 코드쉐어(전전,융합)"
         )); //2
 
-        defaultLectures.add(new EnrolledLecture(
+        defaultLectures.add(new RegisteredLecture(
                 "객체지향프로그래밍",
-                Arrays.asList(162,163,164,165,166,167), // Thu 09:00~12:00
+                "162,163,164,165,166,167", // Thu 09:00~12:00
                 3F, 2,
                 "창의ICT공과대학",
                 "전자전기공학부",
                 49156, 3,
                 Classification.MAJOR,
                 CourseType.NONE,
-                "권금철",
+                "권금철", "310관 619호 <강의실>",
                 "MSC,코드쉐어(소프트,융합)"
         )); //3
 
-        defaultLectures.add(new EnrolledLecture(
+        defaultLectures.add(new RegisteredLecture(
                 "인간행동과심리",
-                Arrays.asList(24,25,26,27,28,29), // Mon 12:00~15:00
+                "24,25,26,27,28,29", // Mon 12:00~15:00
                 3F, 0,
                 "교양",
                 "핵심-신뢰",
                 51382, 1,
                 Classification.GENERAL_EDUCATION,
                 CourseType.MIXED,
-                "구재선",
+                "구재선", "00 000000",
                 "핵심-신뢰"
         )); //4
 
-        defaultLectures.add(new EnrolledLecture(
+        defaultLectures.add(new RegisteredLecture(
                 "국어교과교재연구및지도법",
-                Arrays.asList(24,25,26,27,28,29), // Mon 12:00~15:00
+                "24,25,26,27,28,29", // Mon 12:00~15:00
                 3F, 3,
                 "인문대학(2011)",
                 "국어국문학과",
                 49933, 1,
                 Classification.TEACHING_MAJOR,
                 CourseType.NONE,
-                "이은미",
+                "이은미", "203관(서라벌홀) 513호 <강의실>",
                 ""
         )); //5
 
-        defaultLectures.add(new EnrolledLecture(
+        defaultLectures.add(new RegisteredLecture(
                 "CAU세미나(2)",
-                Arrays.asList(76,77), // Tue 14:00~15:00
+                "76,77", // Tue 14:00~15:00
                 0.5F, 0,
                 "사범대학(2011)",
                 "유아교육과",
                 51097, 1,
                 Classification.ELECTIVE,
                 CourseType.NONE,
-                "김민진",
+                "김민진", "203관(서라벌홀) 405호 <강의실>",
                 ""
         )); //6
 
-        defaultLectures.add(new EnrolledLecture(
+        defaultLectures.add(new RegisteredLecture(
                 "학교폭력예방및학생의이해",
-                Arrays.asList(178,179,180,181), // Thu 17:00~19:00
+                "178,179,180,181", // Thu 17:00~19:00
                 2F, 0,
                 "사범대학(2011)",
                 "유아교육과",
-                52371, 1,
+                52371, 2,
                 Classification.TEACHER_CERTIFICATE,
                 CourseType.NONE,
-                "우지향",
+                "우지향", "303관(법학관) 703호 <첨단강의실>",
                 "교직소양(13학번 이후)"
         )); //7
 
-        defaultLectures.add(new EnrolledLecture(
+        defaultLectures.add(new RegisteredLecture(
                 "게임이론",
-                Arrays.asList(24,25,26,120,121,122), // Mon 12:00~13:30, Wed 12:00~13:30
+                "24,25,26,120,121,122", // Mon 12:00~13:30, Wed 12:00~13:30
                 3F, 2,
                 "경영경제대학(2011)",
                 "경제학부(서울)",
                 56798, 1,
                 Classification.MAJOR,
                 CourseType.VIDEO,
-                "김수진",
+                "김수진", "00 000000",
                 ""
         )); //8
 
-        defaultLectures.add(new EnrolledLecture(
+        defaultLectures.add(new RegisteredLecture(
                 "관리회계 (영어A강의)",
-                Arrays.asList(81,82,83,177,178,179), // Tue 16:30~18:00, Thu 16:30~18:00
+                "81,82,83,177,178,179", // Tue 16:30~18:00, Thu 16:30~18:00
                 3F, 2,
                 "경영경제대학(2011)",
                 "경영학부(서울)",
                 2578, 3,
                 Classification.REQUIRED_MAJOR,
                 CourseType.LIVE_VIDEO,
-                "현정훈",
+                "현정훈", "00 000000",
                 ""
         )); //9
 
-        defaultLectures.add(new EnrolledLecture(
+        defaultLectures.add(new RegisteredLecture(
                 "공업수학 (영어A강의)",
-                Arrays.asList(68,69,162,163,164,165), // Tue 10:00~11:00, Thu 09:00~11:00
+                "162,163,164,165,68,69", // Tue 10:00~11:00, Thu 09:00~11:00
                 3F, 1,
                 "창의ICT공과대학",
                 "전자전기공학부",
                 41144, 4,
                 Classification.BASIC_MAJOR,
                 CourseType.BLENDED,
-                "전웅선",
+                "전웅선", "207관(봅스트홀) 234호 <강의실>, 310관 616호 <강의실>",
                 "MSC"
         )); //10
 
-        defaultLectures.add(new EnrolledLecture(
+        defaultLectures.add(new RegisteredLecture(
                 "신화적상상력과판타지",
-                Arrays.asList(280,281), // Sat 20:00~21:00
+                "280,281", // Sat 20:00~21:00
                 3F, 0,
                 "교양",
                 "선택-창의",
                 56422, 2,
                 Classification.GENERAL_EDUCATION,
                 CourseType.VIDEO,
-                "이명현",
+                "이명현", "00 000000",
                 "선택-창의 지식경영학부 대상/정정기간에는 통합여석 적용 예정/동영상100%(원격수업 고정운영)[[수강대상 : 지식경영학부]]"
         )); //11
 
-        defaultLectures.add(new EnrolledLecture(
+        defaultLectures.add(new RegisteredLecture(
                 "의약품설계합성학 (영어A강의)",
-                Arrays.asList(34,35,36,37), // Mon 20:00~21:00
+                "34,35,36,37", // Mon 20:00~21:00
                 2F, 3,
                 "약학대학(2011)",
                 "약학부",
                 41302, 1,
                 Classification.ELECTIVE_MAJOR,
                 CourseType.NONE,
-                "오경수",
+                "오경수", "102관(약학대학 및 R&D센터) 206호 <강의실>",
                 "자과생만 수강가능(4,5학년 수강)"
         )); //12
 
-        for(EnrolledLecture lecture:defaultLectures){
+        for(RegisteredLecture lecture:defaultLectures){
             lectureRepository.save(lecture);
         }
     }
