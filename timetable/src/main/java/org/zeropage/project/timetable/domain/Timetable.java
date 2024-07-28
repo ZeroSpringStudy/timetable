@@ -16,7 +16,7 @@ public class Timetable {
     @Id
     @GeneratedValue
     private Long id;
-    @OneToMany(mappedBy = "timetable", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "timetable", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LectureTimetable> lectures;
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
