@@ -42,7 +42,7 @@ public abstract class Lecture {
      * 191은 목요일 23:30~24:00,
      * 239는 금요일 23:30~24:00,
      * 287은 토요일 23:30~24:00.
-     * 일요일에는 강의가 없으므로 생각하지 않았음.
+     * 일요일에는 강의가 없으므로 생각하지 않았음. (어느 정도 대비를 해 놓긴 함)
      * 별도의 Entity를 쓰면 join 문제가 발생해 String으로 임시 대체
      */
     private String classHours;
@@ -69,19 +69,23 @@ public abstract class Lecture {
         return 0F;
     }
 
-    public boolean isClassOverlaped(Lecture lecture){
-        ArrayList<Integer> thisHours = new ArrayList<>();
-        ArrayList<Integer> otherHours = new ArrayList<>();
-        String[] thisStr = this.getClassHours().replace(" ", "").split(",");
-        for (String time : thisStr) {
-            thisHours.add(Integer.parseInt(time));
+    public void setClassHoursByList() {
+        //데이터 활용을 위해 int의 배열로도 바꿔서 저장함(이 데이터는 DB에는 없으므로 여기서 시행)
+        ArrayList<Integer> classHoursByList = new ArrayList<>();
+        String[] classHoursByStr = getClassHours().split(",");
+        for (String classHour : classHoursByStr) {
+            if (classHour.isBlank()) continue;
+            classHoursByList.add(Integer.valueOf(classHour));
         }
-        String[] otherStr = lecture.getClassHours().replace(" ", "").split(",");
-        for (String time : otherStr) {
-            thisHours.add(Integer.parseInt(time));
-        }
-        thisHours.retainAll(otherHours);
-        return thisHours.size() == 0;
+        //시간 정보가 없으면 빈 리스트 넣어주기까지만(null 들어가는 것 방지)
+        //시간 볼 때 예외 발생하면 이거 먼저 setter로 변경할 필요 있음
+        this.classHoursByList = classHoursByList;
+    }
+
+    public boolean isClassOverlaped(Lecture lecture) {
+        ArrayList<Integer> overlapHours = new ArrayList<>(this.getClassHoursByList());
+        overlapHours.retainAll(lecture.getClassHoursByList());
+        return overlapHours.size() == 0;
     }
 
 

@@ -10,7 +10,7 @@ import java.util.List;
 @Entity
 @Getter @Setter
 public class Member {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue
     private Long id;
 
     private String userName;

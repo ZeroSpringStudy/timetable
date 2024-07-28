@@ -25,7 +25,7 @@ public class Member {
      * 암호화된 비밀번호
      */
     @Column(nullable = false)
-    private String password;
+    private String userPW;
 
     @OneToMany(mappedBy = "member")
     private List<Timetable> timetables = new ArrayList<>();

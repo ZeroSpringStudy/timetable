@@ -5,7 +5,9 @@ import org.zeropage.project.timetable.domain.lecture.Classification;
 import org.zeropage.project.timetable.domain.lecture.RegisteredLecture;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 public class SearchEnrolledLecture {
@@ -19,6 +21,7 @@ public class SearchEnrolledLecture {
     // private List<CourseType> courseType;
     private Float credit;
     private Integer grade;
+    private String lecturePlace;
     private List<Integer> classHours;
 
     /**
@@ -29,7 +32,7 @@ public class SearchEnrolledLecture {
      * 시간이 조금이라도 겹치는 모든 강의를 검색할 것인지
      * 검색 방법을 설정함.
      */
-    private TimeSearchMode classHoursMode;
+    private TimeSearchMode timeSearchMode;
 
     public SearchEnrolledLecture() {
         this.college = "";
@@ -41,7 +44,13 @@ public class SearchEnrolledLecture {
         this.credit = null;
         this.grade = null;
         this.classHours = new ArrayList<>();
-        this.classHoursMode = TimeSearchMode.COVER;
+        this.lecturePlace = "";
+        this.timeSearchMode = TimeSearchMode.COVER;
+    }
+
+    public void setClassHours(List<Integer> classHours) {
+        // 중복 제거 및 정렬 시행
+        this.classHours = classHours.stream().sorted().distinct().collect(Collectors.toList());
     }
 
     /**

@@ -13,6 +13,6 @@ class DemoApplicationTests {
 	@Test
 	void lectureGetTest() {
 		getLectureFile.get("", "",
-				"D:\\Java\\springstudy\\project\\timetable\\lectures");
+				"");
 	}
 }

@@ -223,17 +223,15 @@ public class LectureServiceTest {
         printResult(searchResult);
     }
 
-    private void printResult(List<Lecture> result){
+    static void printResult(List<Lecture> result){
         for(Lecture lecture:result){
             System.out.println(lecture);
         }
     }
 
     /**
-     * Save lecture data to test.
-     * It must be done before test, or error will be occured.
-     * 테스트를 위해 데이터를 저장함.
-     * 테스트 이전에 진행하지 않으면 에러 발생.
+     * Save lecture data to test... if there is no data.
+     * 테스트를 위해 데이터를 저장함. 다만 이미 데이터가 있다면 의미 없음
      */
     private void persistDefaultLectureData(){
         List<RegisteredLecture> defaultLectures = new ArrayList<>();

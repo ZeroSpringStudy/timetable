@@ -17,9 +17,11 @@ public class LectureTimetable {
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     //Maybe EAGER can be better choice than LAZY in this time... but set to LAZY, however.
+    @JoinColumn(name = "lecture_id")
     private Lecture lecture;
     @ManyToOne(fetch = FetchType.LAZY)
     //Maybe EAGER can be better choice than LAZY in this time... but set to LAZY, however.
+    @JoinColumn(name = "timetable_id")
     private Timetable timetable;
 
     /**

@@ -25,6 +25,7 @@ public class Timetable {
      * Key that cannot change but can see. Uses when user shares their timetable.
      * 변경은 불가하나 볼 수는 있는 key. 시간표를 공유할 때 사용.
      */
+    @Column(unique = true)
     private String viewOnlyKey;
 
     public Timetable(List<LectureTimetable> lectures, Member member) {

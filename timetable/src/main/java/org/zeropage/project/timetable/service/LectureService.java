@@ -21,7 +21,16 @@ public class LectureService {
         lectureRepository.save(lecture);
     }
 
+    public Lecture findById(long id) {
+        Lecture result = lectureRepository.findOne(id);
+        result.setClassHoursByList();
+        return result;
+    }
+
     public List<Lecture> search(SearchEnrolledLecture option){
-        return lectureRepository.find(option);
+        List<Lecture> result = lectureRepository.find(option);
+        for (Lecture lecture : result)
+            lecture.setClassHoursByList();
+        return result;
     }
 }

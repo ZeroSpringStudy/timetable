@@ -11,8 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class LectureTimetable {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name= "lecture_timetable_id")
+    @Id @GeneratedValue
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

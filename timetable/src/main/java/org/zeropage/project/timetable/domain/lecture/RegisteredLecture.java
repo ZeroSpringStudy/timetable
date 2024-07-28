@@ -12,6 +12,10 @@ import java.util.Objects;
 /**
  * Lecture already enrolled by school
  * 학교에서 등록한 강의
+ *
+ * 현재 상황은 하나의 강의가 여러 과에 나누어 등록되어 있으면 하나의 강의가 여러 번 입력되는 방식임.
+ * 근데 엑셀파일 받을 때 설정한 과와 엑셀파일 내에 있는 과를 전부 저장한 후, 검색할 때 과 설정이 들어오지 않으면
+ * 두 데이터가 같은 것만 가져오는 방식으로 설정할 수도 있을듯
  */
 @Entity
 @DiscriminatorValue("R")
@@ -85,6 +89,7 @@ public class RegisteredLecture extends Lecture {
     private String lecturePlace;
 
     @Lob // Can be too long to save by varchar.
+    @Column(columnDefinition = "LONGTEXT") //놔두면 용량 부족하다고 예외 발생
     private String remark;
 
     /**

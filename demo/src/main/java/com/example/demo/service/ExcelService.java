@@ -71,7 +71,7 @@ public class ExcelService {
             for (int i = 0; i < timeTmpList.length; i++)
                 timeTmpList[i] = timeTmpList[i].trim();
 
-            String lectureTime = ""; //시간정보 String
+            String lectureTime = ","; //시간정보 String, 검색 때문에 맨 앞과 뒤 ','을 넣음
             String lecturePlace = ""; //강의실정보 String
             for (String timeTmp : timeTmpList) {
                 if (timeTmp.isBlank()) continue;
@@ -128,8 +128,7 @@ public class ExcelService {
                     lecturePlace += timeTmp + ", ";
                 }
             }
-            if (!lectureTime.isEmpty())
-                lectureTime = lectureTime.substring(0, lectureTime.length() - 1);
+            if (lectureTime.equals(",")) lectureTime = ""; //아무것도 없는 건 별도로 처리함
             if (!lecturePlace.isEmpty())
                 lecturePlace = lecturePlace.substring(0, lecturePlace.length() - 2);
             /*
