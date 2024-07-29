@@ -1,5 +1,7 @@
 package org.zeropage.project.timetable.wizardoptions;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.zeropage.project.timetable.domain.Timetable;
 import org.zeropage.project.timetable.domain.lecture.CustomLecture;
 
@@ -8,6 +10,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Setter
 public class Wizard {
     private List<GroupOfGroup> groups = new ArrayList<>();
 
@@ -47,7 +51,7 @@ public class Wizard {
      * 공강 계산 시 토요일을 제외함.
      * 토요일 강의 수강을 희망 시 false로 설정함.
      */
-    private boolean calculateSaturday;
+    private Boolean calculateSaturday;
 
     /**
      * Exclude video lecture from all limitations.
@@ -58,7 +62,7 @@ public class Wizard {
      * 예를 들어, 공강날에 영상강의가 들어가거나 강의시작시각 이전에 들어갈 수 있음.
      * 시험 일정을 조절하고 싶다면 false로 설정하면 됨.
      */
-    private boolean excludeVideoLecture;
+    private Boolean excludeVideoLecture;
 
     /**
      * Exclude live video lecture only from empty options.
@@ -68,7 +72,7 @@ public class Wizard {
      * 예를 들어, 공강날에 실시간 비대면 강의는 들어갈 수 있으나,
      * 강의시작시간 이전에는 들어갈 수 없음.
      */
-    private boolean excludeLivevideoLectureOnEmpty;
+    private Boolean excludeLivevideoLectureOnEmpty;
 
     /**
      * Exclude live video lecture from all limitations.
@@ -77,14 +81,14 @@ public class Wizard {
      * 실시간 비대면 강의를 모든 조건에서 제외함.
      * 예를 들어, 공강날에 실시간 비대면 강의가 들어가거나 강의시작시각 이전에 들어갈 수 있음.
      */
-    private boolean excludeLivevideoLectureAll;
+    private Boolean excludeLivevideoLectureAll;
 
     /**
      * Uses to see all last priority in one timetable, to decrease meaningless result.
      * 의미없는 결과를 줄이기 위해 마지막 우선순위를 한번에 시간표에 표시할 때 사용.
      * Low priority. 후순위 구현 대상.
      */
-    private boolean showAllLastPriority;
+    private Boolean showAllLastPriority;
 
     /**
      * Adds time user want to avoid, both because of other schedule or just they don't want it.
@@ -125,7 +129,10 @@ public class Wizard {
      * @return result of wizard 마법사 결과
      */
     public List<Timetable> result(){
-        //TODO
-        throw new UnsupportedOperationException(); //temporal exception 임시 예외
+        ArrayList<Timetable> result = new ArrayList<>();
+        ArrayList<GroupOfGroup> groupOfGroups = new ArrayList<>(groups);
+        GroupOfGroup firstGroup = groupOfGroups.remove(0);
+        firstGroup.calculateResult(this, result, new ArrayList<>(), groupOfGroups);
+        return result;
     }
 }

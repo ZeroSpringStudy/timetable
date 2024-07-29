@@ -1,6 +1,8 @@
 package org.zeropage.project.timetable.wizardoptions;
 
 import lombok.Data;
+import org.zeropage.project.timetable.domain.Timetable;
+import org.zeropage.project.timetable.domain.lecture.Lecture;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,5 +29,46 @@ public class GroupOfGroup {
 
     public void deleteGroup(LectureGroup group){
         lectureGroups.remove(group);
+    }
+
+    void calculateResult(Wizard options,
+                         ArrayList<Timetable> resultList,
+                         ArrayList<LectureGroup> selectedGroups,
+                         ArrayList<GroupOfGroup> remainingGroups) {
+        calculateResult(options,0,numOfGroups,resultList,
+                selectedGroups,remainingGroups);
+    }
+
+    void calculateResult(Wizard options, int startIndex, int numOfLeftGroup,
+                         ArrayList<Timetable> resultList,
+                         ArrayList<LectureGroup> selectedGroups,
+                         ArrayList<GroupOfGroup> remainingGroups) {
+        for (int i = startIndex; i < lectureGroups.size() - numOfLeftGroup; i++) {
+            ArrayList<LectureGroup> newlySelectedGroups = new ArrayList<>(selectedGroups);
+            newlySelectedGroups.add(lectureGroups.get(i));
+            if (numOfLeftGroup != 0) {
+                //이 GroupOfGroup에서 LectureGroup를 더 골라야 함
+                //예를 들어 핵교 5개 영역 중 2개를 고르도록 했다면, 하나를 방금 골랐고 나머지 하나를 골라야 함
+                calculateResult(options, i + 1, numOfLeftGroup - 1,
+                        resultList, newlySelectedGroups, remainingGroups);
+            } else {
+                //이 group에서 LectureGroup 생성이 끝남
+                if (remainingGroups.size() != 0) {
+                    //다음 group이 있어 넘겨 주어야 함
+                    ArrayList<GroupOfGroup> nextRemainingGroups = new ArrayList<>(remainingGroups);
+                    GroupOfGroup nextGroup = nextRemainingGroups.remove(0);
+                    nextGroup.calculateResult(options, resultList,
+                            newlySelectedGroups, nextRemainingGroups);
+                } else {
+                    //모든 LectureGroup 생성이 끝남
+                    ArrayList<LectureGroup> finallySelectedGroups =
+                            new ArrayList<>(newlySelectedGroups);
+                    LectureGroup firstGroup = finallySelectedGroups.remove(0);
+                    firstGroup.calculateResult(options, resultList,
+                            new ArrayList<Lecture>(),
+                            finallySelectedGroups);
+                }
+            }
+        }
     }
 }
