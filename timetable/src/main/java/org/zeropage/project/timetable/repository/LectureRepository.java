@@ -10,11 +10,9 @@ import org.zeropage.project.timetable.domain.lecture.CustomLecture;
 import org.zeropage.project.timetable.domain.lecture.Lecture;
 import org.zeropage.project.timetable.domain.lecture.RegisteredLecture;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Can be replaced to interface which extends JPARepository&lt;LectureEntity, Long&gt;
@@ -136,18 +134,14 @@ public class LectureRepository {
      * lecture column 기준 검색 후 결과 산출
      *
      * @param lecture 검사 대상 객체
-     * @return 이 lecture의 reference 수
+     * @return 이 lecture가 customLecture이고 reference 수가 1인가
      */
-    public int getNumOfReferencedLecture(Lecture lecture) {
-        Integer refCount = em.createQuery("select count(lt) from LectureTimetable lt" +
-                        " where lt.lecture=:lecture", Integer.class)
+    public boolean isLectureRemoveable(Lecture lecture) {
+        if(!(lecture instanceof CustomLecture)) return false;
+        else return em.createQuery("select count(lt) from LectureTimetable lt" +
+                        " where lt.lecture=:lecture", Long.class)
                 .setParameter("lecture", lecture)
-                .getSingleResult();
-        // 그냥 반환을 int로 하기 때문에, 등록된 강의면 reference를 그 자체로 하나 있는 것으로 취급하여 해결
-        // 혹시 쓸일 있을까 싶어 boolean이 아니라 int로 하긴 했는데,
-        // CustomLecture의 삭제 여부만을 보는 지금은 오히려 복잡해지기한 하는 코드임
-        if(lecture instanceof RegisteredLecture) refCount++;
-        return refCount;
+                .getSingleResult().equals(1L);
     }
 
     /**
@@ -164,9 +158,6 @@ public class LectureRepository {
                     " 폐강으로 인해 강의를 삭제하는 것이면, 다른 프로젝트나 메서드 수정," +
                     " 또는 DB에 직접 쿼리를 날리는 방식으로 진행해 주시기 바랍니다.");
         }
-        em.createQuery("delete Lecture l where id=:id")
-                .setParameter("id", lecture.getId())
-                .executeUpdate();
-        em.clear();
+        em.remove(em.find(Lecture.class, lecture.getId()));
     }
 }

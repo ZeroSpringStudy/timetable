@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -60,6 +61,10 @@ public abstract class Lecture {
         this.classHours = classHours;
     }
 
+    public Lecture(String name, List<Integer> classHoursByList) {
+        this.name = name;
+        this.classHoursByList = classHoursByList;
+    }
 
     /**
      * Get credit of lecture. If lecture is customed, then it returns 0.
@@ -69,8 +74,11 @@ public abstract class Lecture {
         return 0F;
     }
 
+    /**
+     * 데이터 활용을 위해 int의 배열로도 바꿔서 저장함(이 데이터는 DB에는 없으므로 여기서 시행)
+     * 데이터를 가져올 때마다 실행해야 함
+     */
     public void setClassHoursByList() {
-        //데이터 활용을 위해 int의 배열로도 바꿔서 저장함(이 데이터는 DB에는 없으므로 여기서 시행)
         ArrayList<Integer> classHoursByList = new ArrayList<>();
         String[] classHoursByStr = getClassHours().split(",");
         for (String classHour : classHoursByStr) {
@@ -82,12 +90,34 @@ public abstract class Lecture {
         this.classHoursByList = classHoursByList;
     }
 
+    /**
+     * DB 저장을 위해 int의 배열을 문자열로 변경하는 과정
+     * 저장 직전 시행할 필요 있음
+     */
+    public void setClassHours() {
+        String classHours = ",";
+        for (Integer classHour : classHoursByList)
+            classHours += classHour.toString() + ',';
+        this.classHours = classHours;
+    }
+
     public boolean isClassOverlaped(Lecture lecture) {
         ArrayList<Integer> overlapHours = new ArrayList<>(this.getClassHoursByList());
         overlapHours.retainAll(lecture.getClassHoursByList());
-        return overlapHours.size() == 0;
+        return overlapHours.size() != 0;
     }
 
+    /**
+     * RegisteredLecture.equals 메서드 사용을 위해 임시로 만들어 놓은 것
+     * 다만 쓸 일 없을듯 함
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Lecture lecture)) return false;
+        if (getId() == null && lecture.getId() == null) return false;
+        return Objects.equals(getId(), lecture.getId());
+    }
 
     /**
      * If two lectures are all enrolled by school and name is same,

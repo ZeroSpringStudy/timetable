@@ -19,4 +19,7 @@ public class CustomLecture extends Lecture{
     public CustomLecture(String name, String classHours) {
         super(name, classHours);
     }
+    public CustomLecture(String name, List<Integer> classHours) {
+        super(name, classHours);
+    }
 }
