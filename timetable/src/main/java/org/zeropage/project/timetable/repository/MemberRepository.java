@@ -20,19 +20,17 @@ public class MemberRepository {
 
     public boolean isUserNameUseable(String userName) {
         return em.createQuery("select count (m) from Member m" +
-                        " where m.userName=:userName", Long.class)
+                        " where m.username=:userName", Long.class)
                 .setParameter("userName", userName)
                 .getSingleResult().equals(0L);
     }
 
-    public Member findByUserNameAndUserPw(String userName, String userPw) {
+    public Member findByUserNameAndUserPw(String userName) {
         Member user = em.createQuery("select m from Member m" +
-                                " where m.userName=:userName",
+                                " where m.username=:userName",
                         Member.class)
                 .setParameter("userName", userName)
                 .getSingleResult();
-        if (!passwordEncoder.matches(userPw, user.getUserPW()))
-            throw new NoResultException("비밀번호가 틀립니다.");
         return user;
     }
 
