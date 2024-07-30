@@ -13,6 +13,11 @@ spring:
         default_batch_fetch_size: 25
     open-in-view: false
 
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+
 logging:
   level:
     org.hibernate.SQL: debug
