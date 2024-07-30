@@ -7,7 +7,7 @@ import org.zeropage.project.timetable.domain.lecture.Lecture;
 import org.zeropage.project.timetable.domain.lecture.RegisteredLecture;
 
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -22,7 +22,11 @@ import java.util.stream.IntStream;
 public class LectureGroup {
     private String name;
     private List<Lecture> lectureList = new ArrayList<>();
-    private Integer numOfLecturePicks;
+    private int numOfLecturePicks;
+
+    public LectureGroup() {
+        this.numOfLecturePicks = 1;
+    }
 
     public void addLecture(Lecture lecture){
         lectureList.add(lecture);
@@ -39,10 +43,10 @@ public class LectureGroup {
                 currentLectureList, result, nextGroups);
     }
 
-    void calculateResult(Wizard options, int startIndex, int numOfLeftGroup,
+    private void calculateResult(Wizard options, int startIndex, int numOfLeftGroup,
                          List<Lecture> currentTimetableLectureList,
                          List<Timetable> result, List<LectureGroup> remainingGroups) {
-        for (int i = startIndex; i < lectureList.size() - numOfLeftGroup; i++) {
+        for (int i = startIndex; i <= lectureList.size() - numOfLeftGroup; i++) {
             Lecture targetLecture = lectureList.get(i);
 
             //강의 추가 가능한지(다른 강의와 겹치거나 option에 맞지 않는 게 있는지) 확인
@@ -70,7 +74,7 @@ public class LectureGroup {
 
                     //공강 option
                     if (!registeredLecture.getCourseType().isUntact() ||
-                            Objects.requireNonNullElse(
+                            !Objects.requireNonNullElse(
                                     options.getExcludeLivevideoLectureOnEmpty(), false)) {
                         //공강 조건 제외가 아니면(이게 걸려 있어서 시작, 종료시간을 먼저 계산한 것)
                         isNotAbleToAdd = checkIfNotAbleToAddByEmptyDay(options, registeredLecture);
@@ -87,7 +91,7 @@ public class LectureGroup {
             ArrayList<Lecture> newTimetableLectureList =
                     new ArrayList<>(currentTimetableLectureList);
             newTimetableLectureList.add(targetLecture);
-            if (numOfLeftGroup != 0) {
+            if (numOfLeftGroup != 1) {
                 calculateResult(options, i + 1, numOfLeftGroup - 1,
                         newTimetableLectureList, result, remainingGroups);
             } else {
@@ -102,19 +106,23 @@ public class LectureGroup {
 
                     //공강 날짜 수 세는 건 여기서
                     //검사 과정이 복잡하니 검사 필요없을 때는 별도로 뺌
-                    if (options.getNumOfLeastEmptyDay() == 0)
+                    if (options.getNumOfLeastEmptyDay() == 0) {
                         result.add(new Timetable(newTimetableLectureList, 0));
+                    } else {
+                        int numOfEmptyDay = getNumOfEmptyDay(options, newTimetableLectureList);
 
-                    int numOfEmptyDay = getNumOfEmptyDay(options, newTimetableLectureList);
-
-                    if (numOfEmptyDay >= options.getNumOfLeastEmptyDay())
-                        result.add(new Timetable(newTimetableLectureList, 0));
+                        if (numOfEmptyDay >= options.getNumOfLeastEmptyDay())
+                            result.add(new Timetable(newTimetableLectureList, 0));
+                    }
                 }
             }
         }
     }
 
-    private static int getNumOfEmptyDay(Wizard options, ArrayList<Lecture> newTimetableLectureList) {
+    /**
+     * 테스트를 위해 private을 해제함
+     */
+    static int getNumOfEmptyDay(Wizard options, ArrayList<Lecture> newTimetableLectureList) {
         int numOfEmptyDay = 0;
         DayOfWeek endOfCount;
         if (Objects.requireNonNullElse(options.getCalculateSaturday(), false))
@@ -155,8 +163,11 @@ public class LectureGroup {
         return numOfEmptyDay;
     }
 
-    private static boolean checkIfNotAbleToAddByEmptyDay(Wizard options, Lecture lecture) {
-        for (DayOfWeek day : options.getEmptyLecturesList()) {
+    /**
+     * 테스트를 위해 private을 해제함
+     */
+    static boolean checkIfNotAbleToAddByEmptyDay(Wizard options, Lecture lecture) {
+        for (DayOfWeek day : options.getEmptyDaysList()) {
             List<Integer> fullDay = IntStream
                     .range(24 * 2 * (day.getValue() - 1), 24 * 2 * day.getValue())
                     .boxed().collect(Collectors.toList());
@@ -167,11 +178,14 @@ public class LectureGroup {
         return false;
     }
 
-    private static boolean checkIfNotAbleToAddByTime
+    /**
+     * 테스트를 위해 private을 해제함
+     */
+    static boolean checkIfNotAbleToAddByTime
             (Wizard options, Lecture lecture) {
         if (options.getLectureStartTime() != null) { //시작 시간 조건
             for (int j = 0; j < 7; j++) {
-                LocalDateTime lectureStartTime = options.getLectureStartTime();
+                LocalTime lectureStartTime = options.getLectureStartTime();
                 int lectureStartTimeForInt = lectureStartTime.getHour() * 2;
                 if (lectureStartTime.getMinute() > 30) {
                     lectureStartTimeForInt += 2;
@@ -188,7 +202,7 @@ public class LectureGroup {
         }
         if (options.getLectureEndTime() != null) { //종료 시간 조건
             for (int j = 0; j < 7; j++) {
-                LocalDateTime lectureEndTime = options.getLectureEndTime();
+                LocalTime lectureEndTime = options.getLectureEndTime();
                 int lectureEndTimeForInt = lectureEndTime.getHour() * 2;
                 if (lectureEndTime.getMinute() > 30) {
                     lectureEndTimeForInt++;

@@ -5,7 +5,6 @@ import org.zeropage.project.timetable.domain.lecture.Classification;
 import org.zeropage.project.timetable.domain.lecture.RegisteredLecture;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 

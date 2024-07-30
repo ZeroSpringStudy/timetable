@@ -6,7 +6,7 @@ import org.zeropage.project.timetable.domain.Timetable;
 import org.zeropage.project.timetable.domain.lecture.CustomLecture;
 
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class Wizard {
      * The day of week that lecture must not be exist.
      * 공강 요일 설정.
      */
-    private List<DayOfWeek> emptyLecturesList = new ArrayList<>();
+    private List<DayOfWeek> emptyDaysList = new ArrayList<>();
 
     /**
      * The number day of week that lecture must not be exist.
@@ -35,7 +35,7 @@ public class Wizard {
      * 강의시작시각.
      * 이 시간 이전에 시작하는 강의는 선택되지 않음.
      */
-    private LocalDateTime lectureStartTime;
+    private LocalTime lectureStartTime;
 
     /**
      * End time of lecture.
@@ -43,7 +43,7 @@ public class Wizard {
      * 강의종료시각.
      * 이 시간 이후에 끝나는 강의는 선택되지 않음.
      */
-    private LocalDateTime lectureEndTime;
+    private LocalTime lectureEndTime;
 
     /**
      * Exclude saturday from empty day limitations.
@@ -89,6 +89,19 @@ public class Wizard {
      * Low priority. 후순위 구현 대상.
      */
     private Boolean showAllLastPriority;
+
+    public Wizard() {
+        this.groups = new ArrayList<>();
+        this.emptyDaysList = new ArrayList<>();
+        this.numOfLeastEmptyDay = 0;
+        this.lectureStartTime = null;
+        this.lectureEndTime = null;
+        this.calculateSaturday = false;
+        this.excludeVideoLecture = false;
+        this.excludeLivevideoLectureOnEmpty = false;
+        this.excludeLivevideoLectureAll = false;
+        this.showAllLastPriority = false;
+    }
 
     /**
      * Adds time user want to avoid, both because of other schedule or just they don't want it.

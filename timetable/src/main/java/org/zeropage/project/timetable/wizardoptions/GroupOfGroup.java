@@ -23,8 +23,13 @@ public class GroupOfGroup {
         numOfGroups = 1;
         isLastPriority = false;
     }
+
     public void addGroup(LectureGroup group){
         lectureGroups.add(group);
+    }
+
+    public void addGroup(){
+        lectureGroups.add(new LectureGroup());
     }
 
     public void deleteGroup(LectureGroup group){
@@ -39,20 +44,20 @@ public class GroupOfGroup {
                 selectedGroups,remainingGroups);
     }
 
-    void calculateResult(Wizard options, int startIndex, int numOfLeftGroup,
+    private void calculateResult(Wizard options, int startIndex, int numOfLeftGroup,
                          ArrayList<Timetable> resultList,
                          ArrayList<LectureGroup> selectedGroups,
                          ArrayList<GroupOfGroup> remainingGroups) {
-        for (int i = startIndex; i < lectureGroups.size() - numOfLeftGroup; i++) {
+        for (int i = startIndex; i <= lectureGroups.size() - numOfLeftGroup; i++) {
             ArrayList<LectureGroup> newlySelectedGroups = new ArrayList<>(selectedGroups);
             newlySelectedGroups.add(lectureGroups.get(i));
-            if (numOfLeftGroup != 0) {
+            if (numOfLeftGroup != 1) {
                 //이 GroupOfGroup에서 LectureGroup를 더 골라야 함
                 //예를 들어 핵교 5개 영역 중 2개를 고르도록 했다면, 하나를 방금 골랐고 나머지 하나를 골라야 함
                 calculateResult(options, i + 1, numOfLeftGroup - 1,
                         resultList, newlySelectedGroups, remainingGroups);
             } else {
-                //이 group에서 LectureGroup 생성이 끝남
+                //이 group에서 LectureGroup 생성이 끝남(방금 고른 게 마지막)
                 if (remainingGroups.size() != 0) {
                     //다음 group이 있어 넘겨 주어야 함
                     ArrayList<GroupOfGroup> nextRemainingGroups = new ArrayList<>(remainingGroups);

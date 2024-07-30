@@ -22,6 +22,7 @@ public class LectureTimetable {
     @ManyToOne(fetch = FetchType.LAZY)
     //Maybe EAGER can be better choice than LAZY in this time... but set to LAZY, however.
     @JoinColumn(name = "timetable_id")
+    @ToString.Exclude //이거 안 하면 서로 참조가 되어 StackOverflow 발생
     private Timetable timetable;
 
     /**

@@ -16,7 +16,6 @@ public class Timetable {
     @GeneratedValue
     private Long id;
     @OneToMany(mappedBy = "timetable", cascade = CascadeType.ALL, orphanRemoval = true)
-    @ToString.Exclude //이거 안 하면 서로 참조가 되어 StackOverflow 발생
     private List<LectureTimetable> lectures;
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;

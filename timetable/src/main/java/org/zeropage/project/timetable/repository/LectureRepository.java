@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 import org.zeropage.project.timetable.domain.lecture.CustomLecture;
 import org.zeropage.project.timetable.domain.lecture.Lecture;
-import org.zeropage.project.timetable.domain.lecture.RegisteredLecture;
 
 import java.util.HashSet;
 import java.util.List;
