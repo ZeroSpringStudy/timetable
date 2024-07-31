@@ -6,8 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
-import org.zeropage.project.timetable.domain.lecture.CustomLecture;
 import org.zeropage.project.timetable.domain.lecture.Lecture;
+import org.zeropage.project.timetable.domain.lecture.RegisteredLecture;
 
 import java.util.HashSet;
 import java.util.List;
@@ -37,7 +37,7 @@ public class LectureRepository {
      * 검색조건에 따라 학교에서 등록한 강의를 검색함.
      * 검색조건은 SearchEnrolledLecture class에 저장되어 있음.
      */
-    public List<Lecture> find(SearchEnrolledLecture options){
+    public List<RegisteredLecture> find(SearchEnrolledLecture options){
         String jpql = "select l from Lecture l where type(l) in (RegisteredLecture)";
 
         if (StringUtils.hasText(options.getCollege()))
@@ -83,7 +83,7 @@ public class LectureRepository {
             }
         }
 
-        TypedQuery<Lecture> query = em.createQuery(jpql, Lecture.class);
+        TypedQuery<RegisteredLecture> query = em.createQuery(jpql, RegisteredLecture.class);
 
         if (StringUtils.hasText(options.getCollege()))
             query = query.setParameter("college", options.getCollege());
@@ -129,12 +129,15 @@ public class LectureRepository {
     }
 
     /**
+     * 계획이 변경되어 삭제하지 않는 쪽으로 진행(하라면 할 수는 있음)
+     *
+     *
      * CustomLecture을 어디서도 사용하지 않을 때 삭제하기 위해,
      * lecture column 기준 검색 후 결과 산출
      *
      * @param lecture 검사 대상 객체
      * @return 이 lecture가 customLecture이고 reference 수가 1인가
-     */
+     *
     public boolean isLectureRemoveable(Lecture lecture) {
         if(!(lecture instanceof CustomLecture)) return false;
         else return em.createQuery("select count(lt) from LectureTimetable lt" +
@@ -150,7 +153,7 @@ public class LectureRepository {
      *
      * @param lecture 삭제할 강의
      * @throws AccessDeniedException CustomLecture 객체가 아닌 다른 객체를 삭제하려 할 때
-     */
+     *
     public void remove(Lecture lecture) {
         if (!(lecture instanceof CustomLecture)) {
             throw new AccessDeniedException("학교에서 등록한 강의를 삭제하려 했습니다. 올바른 작동인지 확인해 주세요." +
@@ -159,4 +162,5 @@ public class LectureRepository {
         }
         em.remove(em.find(Lecture.class, lecture.getId()));
     }
+    */
 }

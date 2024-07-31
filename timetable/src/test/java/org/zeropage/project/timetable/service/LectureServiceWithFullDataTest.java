@@ -7,6 +7,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import org.zeropage.project.timetable.domain.lecture.Classification;
 import org.zeropage.project.timetable.domain.lecture.Lecture;
+import org.zeropage.project.timetable.domain.lecture.RegisteredLecture;
 import org.zeropage.project.timetable.repository.LectureRepository;
 import org.zeropage.project.timetable.repository.SearchEnrolledLecture;
 import org.zeropage.project.timetable.repository.TimeSearchMode;
@@ -33,7 +34,7 @@ public class LectureServiceWithFullDataTest {
         SearchEnrolledLecture options = new SearchEnrolledLecture();
         options.setClassHours(List.of(280));
         options.setTimeSearchMode(TimeSearchMode.INCLUDE);
-        List<Lecture> result = lectureRepository.find(options);
+        List<RegisteredLecture> result = lectureRepository.find(options);
         assertEquals(2, result.size());
         assertSame(lectureRepository.findOne(508L), result.get(0));
         assertSame(lectureRepository.findOne(4837L), result.get(1));
@@ -45,7 +46,7 @@ public class LectureServiceWithFullDataTest {
         SearchEnrolledLecture options = new SearchEnrolledLecture();
         options.setClassHours(List.of(280));
         options.setTimeSearchMode(TimeSearchMode.COVER);
-        List<Lecture> result = lectureRepository.find(options);
+        List<RegisteredLecture> result = lectureRepository.find(options);
         assertEquals(0, result.size());
         LectureServiceTest.printResult(result);
     }
@@ -54,7 +55,7 @@ public class LectureServiceWithFullDataTest {
     void lecturePlaceSearchTest() {
         SearchEnrolledLecture options = new SearchEnrolledLecture();
         options.setLecturePlace("309관");
-        List<Lecture> result = lectureRepository.find(options);
+        List<RegisteredLecture> result = lectureRepository.find(options);
         assertEquals(9, result.size());
         assertSame(lectureRepository.findOne(877L), result.get(0));
         assertSame(lectureRepository.findOne(890L), result.get(1));
@@ -88,7 +89,7 @@ public class LectureServiceWithFullDataTest {
         searchOptions.setLecturePlace("203관");
         searchOptions.setClassHours(List.of(76, 77, 78, 79));
         searchOptions.setTimeSearchMode(TimeSearchMode.INCLUDE);
-        List<Lecture> searchResult = lectureService.search(searchOptions);
+        List<RegisteredLecture> searchResult = lectureService.search(searchOptions);
         assertEquals(1,searchResult.size());
         assertSame(lectureRepository.findOne(2537L),searchResult.get(0));
         LectureServiceTest.printResult(searchResult);

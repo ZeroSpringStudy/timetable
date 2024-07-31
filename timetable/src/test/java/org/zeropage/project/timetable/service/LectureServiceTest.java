@@ -38,7 +38,7 @@ public class LectureServiceTest {
     void searchEnrolledLectureByName(){
         SearchEnrolledLecture searchOptions = new SearchEnrolledLecture();
         searchOptions.setName("객체지향프로그래밍");
-        List<Lecture> searchResult = lectureService.search(searchOptions);
+        List<RegisteredLecture> searchResult = lectureService.search(searchOptions);
         assertEquals(2,searchResult.size());
         assertSame(lectureRepository.findOne(2L),searchResult.get(0));
         assertSame(lectureRepository.findOne(3L),searchResult.get(1));
@@ -51,7 +51,7 @@ public class LectureServiceTest {
     void searchEnrolledLectureByCollege(){
         SearchEnrolledLecture searchOptions = new SearchEnrolledLecture();
         searchOptions.setCollege("교양");
-        List<Lecture> searchResult = lectureService.search(searchOptions);
+        List<RegisteredLecture> searchResult = lectureService.search(searchOptions);
         assertEquals(3,searchResult.size());
         assertSame(lectureRepository.findOne(1L),searchResult.get(0));
         assertSame(lectureRepository.findOne(4L),searchResult.get(1));
@@ -66,7 +66,7 @@ public class LectureServiceTest {
         SearchEnrolledLecture searchOptions = new SearchEnrolledLecture();
         searchOptions.setCollege("창의ICT공과대학");
         searchOptions.setDept("전자전기공학부");
-        List<Lecture> searchResult = lectureService.search(searchOptions);
+        List<RegisteredLecture> searchResult = lectureService.search(searchOptions);
         assertEquals(2,searchResult.size());
         assertSame(lectureRepository.findOne(3L),searchResult.get(0));
         assertSame(lectureRepository.findOne(10L),searchResult.get(1));
@@ -79,7 +79,7 @@ public class LectureServiceTest {
     void searchEnrolledLectureByLecturer(){
         SearchEnrolledLecture searchOptions = new SearchEnrolledLecture();
         searchOptions.setLecturer("김민진");
-        List<Lecture> searchResult = lectureService.search(searchOptions);
+        List<RegisteredLecture> searchResult = lectureService.search(searchOptions);
         assertEquals(1,searchResult.size());
         assertSame(lectureRepository.findOne(6L),searchResult.get(0));
         printResult(searchResult);
@@ -91,7 +91,7 @@ public class LectureServiceTest {
     void searchEnrolledLectureByLectureCode(){
         SearchEnrolledLecture searchOptions = new SearchEnrolledLecture();
         searchOptions.setLectureCode(49156);
-        List<Lecture> searchResult = lectureService.search(searchOptions);
+        List<RegisteredLecture> searchResult = lectureService.search(searchOptions);
         assertEquals(2,searchResult.size());
         assertSame(lectureRepository.findOne(2L),searchResult.get(0));
         assertSame(lectureRepository.findOne(3L),searchResult.get(1));
@@ -104,7 +104,7 @@ public class LectureServiceTest {
     void searchEnrolledLectureByCredit(){
         SearchEnrolledLecture searchOptions = new SearchEnrolledLecture();
         searchOptions.setCredit(3F);
-        List<Lecture> searchResult = lectureService.search(searchOptions);
+        List<RegisteredLecture> searchResult = lectureService.search(searchOptions);
         assertEquals(8,searchResult.size());
         assertSame(lectureRepository.findOne(2L),searchResult.get(0));
         assertSame(lectureRepository.findOne(3L),searchResult.get(1));
@@ -123,7 +123,7 @@ public class LectureServiceTest {
     void searchEnrolledLectureByGrade(){
         SearchEnrolledLecture searchOptions = new SearchEnrolledLecture();
         searchOptions.setGrade(2);
-        List<Lecture> searchResult = lectureService.search(searchOptions);
+        List<RegisteredLecture> searchResult = lectureService.search(searchOptions);
         assertEquals(4,searchResult.size());
         assertSame(lectureRepository.findOne(2L),searchResult.get(0));
         assertSame(lectureRepository.findOne(3L),searchResult.get(1));
@@ -141,7 +141,7 @@ public class LectureServiceTest {
                 Classification.MAJOR,
                 Classification.REQUIRED_MAJOR
         ));
-        List<Lecture> searchResult = lectureService.search(searchOptions);
+        List<RegisteredLecture> searchResult = lectureService.search(searchOptions);
         assertEquals(4,searchResult.size());
         assertSame(lectureRepository.findOne(2L),searchResult.get(0));
         assertSame(lectureRepository.findOne(3L),searchResult.get(1));
@@ -158,7 +158,7 @@ public class LectureServiceTest {
         searchOptions.setCollege("소프트웨어대학");
         searchOptions.setDept("소프트웨어학부");
         searchOptions.setName("객체지향프로그래밍");
-        List<Lecture> searchResult = lectureService.search(searchOptions);
+        List<RegisteredLecture> searchResult = lectureService.search(searchOptions);
         assertEquals(1,searchResult.size());
         assertSame(lectureRepository.findOne(2L),searchResult.get(0));
         printResult(searchResult);
@@ -171,7 +171,7 @@ public class LectureServiceTest {
         SearchEnrolledLecture searchOptions = new SearchEnrolledLecture();
         searchOptions.setClassification(List.of(Classification.MAJOR));
         searchOptions.setLecturer("김수진");
-        List<Lecture> searchResult = lectureService.search(searchOptions);
+        List<RegisteredLecture> searchResult = lectureService.search(searchOptions);
         assertEquals(1,searchResult.size());
         assertSame(lectureRepository.findOne(8L),searchResult.get(0));
         printResult(searchResult);
@@ -191,7 +191,7 @@ public class LectureServiceTest {
         ));
         searchOptions.setLectureCode(49156);
         searchOptions.setGrade(2);
-        List<Lecture> searchResult = lectureService.search(searchOptions);
+        List<RegisteredLecture> searchResult = lectureService.search(searchOptions);
         assertEquals(2,searchResult.size());
         assertSame(lectureRepository.findOne(2L),searchResult.get(0));
         assertSame(lectureRepository.findOne(3L),searchResult.get(1));
@@ -217,13 +217,13 @@ public class LectureServiceTest {
                 Classification.BASIC_MAJOR,
                 Classification.ELECTIVE
         ));
-        List<Lecture> searchResult = lectureService.search(searchOptions);
+        List<RegisteredLecture> searchResult = lectureService.search(searchOptions);
         assertEquals(1,searchResult.size());
         assertSame(lectureRepository.findOne(6L),searchResult.get(0));
         printResult(searchResult);
     }
 
-    static void printResult(List<Lecture> result){
+    static void printResult(List<RegisteredLecture> result){
         for(Lecture lecture:result){
             System.out.println(lecture);
         }

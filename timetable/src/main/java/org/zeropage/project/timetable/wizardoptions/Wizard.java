@@ -101,6 +101,7 @@ public class Wizard {
         this.excludeLivevideoLectureOnEmpty = false;
         this.excludeLivevideoLectureAll = false;
         this.showAllLastPriority = false;
+        addGroup();
     }
 
     /**
@@ -119,7 +120,6 @@ public class Wizard {
         groupOfGroup.setName(lecture.getName());
         groupOfGroup.addGroup(lectureGroup);
         groupOfGroup.setLastPriority(false);
-        this.addGroup(groupOfGroup);
     }
 
     public void addGroup(GroupOfGroup group){

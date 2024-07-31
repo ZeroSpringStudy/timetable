@@ -3,9 +3,7 @@ package org.zeropage.project.timetable.domain.lecture;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -55,6 +53,12 @@ public abstract class Lecture {
     @Transient
     private List<Integer> classHoursByList = new ArrayList<>();
 
+    @Transient
+    private List<LectureStartTimeAndEndTime> classHoursByTimeList = new ArrayList<>();
+
+    @Transient
+    private String classHoursByTimeStr;
+
     public Lecture(String name, String classHours) {
         this.id = null;
         this.name = name;
@@ -64,6 +68,15 @@ public abstract class Lecture {
     public Lecture(String name, List<Integer> classHoursByList) {
         this.name = name;
         this.classHoursByList = classHoursByList;
+    }
+
+    /**
+     * boolean은 위 생성자와 구분하기 위해 추가함
+     */
+    public Lecture(String name, List<LectureStartTimeAndEndTime> lectureStartTimeAndEndTimes,
+                   boolean configurer) {
+        this.name = name;
+        this.classHoursByTimeList = lectureStartTimeAndEndTimes;
     }
 
     /**
@@ -88,6 +101,19 @@ public abstract class Lecture {
         //시간 정보가 없으면 빈 리스트 넣어주기까지만(null 들어가는 것 방지)
         //시간 볼 때 예외 발생하면 이거 먼저 setter로 변경할 필요 있음
         this.classHoursByList = classHoursByList;
+
+        ArrayList<Integer> classHours = new ArrayList<>(classHoursByList);
+        Collections.sort(classHours);
+        //연속되는 것끼리 분리해야 함
+        while (classHours.size() != 0) {
+            classHoursByTimeList.add(new LectureStartTimeAndEndTime(classHours));
+        }
+        String classHoursByTimeStr = "";
+        for (LectureStartTimeAndEndTime time : classHoursByTimeList) {
+            classHoursByTimeStr += time.toString() + ", ";
+        }
+        classHoursByTimeStr = classHoursByTimeStr.substring(0, classHoursByTimeStr.length() - 2);
+        this.classHoursByTimeStr = classHoursByTimeStr;
     }
 
     /**
@@ -95,6 +121,13 @@ public abstract class Lecture {
      * 저장 직전 시행할 필요 있음
      */
     public void setClassHours() {
+        if (classHoursByList.size() == 0) {
+            ArrayList<Integer> classHoursByInt = new ArrayList<>();
+            for (LectureStartTimeAndEndTime time : this.classHoursByTimeList) {
+                classHoursByInt.addAll(time.toIntegerArray());
+            }
+            this.classHoursByList = classHoursByInt;
+        }
         String classHours = ",";
         for (Integer classHour : classHoursByList)
             classHours += classHour.toString() + ',';

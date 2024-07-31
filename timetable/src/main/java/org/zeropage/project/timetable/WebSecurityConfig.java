@@ -2,13 +2,12 @@ package org.zeropage.project.timetable;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -24,18 +23,19 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((authorizeRequests) -> {
                     authorizeRequests
-                            .requestMatchers("/saved/user/**").hasRole("USER")
-                            .requestMatchers("/result/save/**").hasRole("USER")
+                            .requestMatchers("/timetable/byMember/**").hasRole("USER")
+                            .requestMatchers("/result/save").hasRole("USER")
+                            .requestMatchers("/user/resign").hasRole("USER")
                             .anyRequest().permitAll();
                 })
                 .formLogin((formLogin) -> {
-                    formLogin.usernameParameter("userName")
-                            .passwordParameter("userPW")
-                            .defaultSuccessUrl("/", true);
+                    formLogin
+                            .loginPage("/user/login")
+                            .defaultSuccessUrl("/");
                 })
                 .logout((logout) -> {
                     logout
-                            .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                            .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
                             .logoutSuccessUrl("/")
                             .invalidateHttpSession(true);
                 });
@@ -48,5 +48,14 @@ public class WebSecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    /**
+     * 인증 처리 Bean 생성
+     */
+    @Bean
+    AuthenticationManager authenticationManager
+            (AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 }

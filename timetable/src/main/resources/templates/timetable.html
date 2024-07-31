@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" th:fragment="timetableView">
+<head>
+    <title>시간표 보기</title>
+</head>
+<body>
+<h2>시간표</h2>
+<div th:if="${timetable}">
+    <h3 th:text="${timetable.member.username} + '의 시간표'"></h3>
+    <ul th:each="lectureTimetable : ${timetable.lectures}">
+        <li>
+            <span th:text="${lectureTimetable.lecture.name}"></span>
+        </li>
+    </ul>
+</div>
+<div th:if="${!timetable}">
+    <p>시간표가 없습니다.</p>
+</div>
+</body>
+</html>

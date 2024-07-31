@@ -46,6 +46,7 @@ public class TimetableService {
         // cascade 처리로 인해 lectureTimetable은 상관하지 않아도 됨
         // 단 CustomLecture 삭제는 생각해야 함
         List<LectureTimetable> lectureTimetables = timetable.getLectures();
+        /* 객체 삭제 보류
         ArrayList<Lecture> lecturesToDelete = new ArrayList<>();
         for (LectureTimetable lectureTimetable : lectureTimetables) {
             Lecture lecture = lectureTimetable.getLecture();
@@ -54,9 +55,13 @@ public class TimetableService {
             //timetable 지우기 전에 lecture를 먼저 지우면 FK문제로 예외가 발생할 것을 대비해
             //lecture 삭제는 timetable, LectureTimetable 삭제 이후에 진행
         }
+         */
         timetableRepository.remove(timetable);
+        /* 객체 삭제 보류
         for (Lecture lecture : lecturesToDelete)
             lectureRepository.remove(lecture);
+
+         */
     }
 
     public Timetable findById(Long id) {

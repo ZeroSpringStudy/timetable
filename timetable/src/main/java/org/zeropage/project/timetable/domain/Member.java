@@ -7,6 +7,7 @@ import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.zeropage.project.timetable.wizardoptions.Wizard;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,7 +38,7 @@ public class Member implements UserDetails {
     @Column(name = "userpw", nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     @ToString.Exclude //이거 안 하면 서로 참조가 되어 StackOverflow 발생
     private List<Timetable> timetables = new ArrayList<>();
 

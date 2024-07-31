@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>시간표 마법사 설정</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+<div class="container mt-4">
+    <header>
+        <h1>시간표 마법사</h1>
+    </header>
+    <main>
+        <body>
+        <h2>시간표 마법사 설정</h2>
+        <form id="wizardForm" th:action="@{/wizard/settings}" th:object="${wizard}" method="post">
+            <!-- GroupOfGroup List -->
+            <div id="groupsContainer">
+                <h3>Groups of Groups</h3>
+                <div th:each="groupOfGroup, iter : ${wizard.groups}">
+                    <fieldset class="mb-4">
+                        <legend><div th:text="|Group ${iter.index + 1}|"></div></legend>
+                        <div class="mb-3">
+                            <button type="button" class="btn btn-danger" th:onclick="'removeGroup(' + ${iter.index} + ')'">Remove Group</button>
+                        </div>
+                        <div>
+                            <label for="groupName${iter.index}" class="form-label">Group Name</label>
+                            <input type="text" id="groupName${iter.index}" class="form-control" th:field="*{groups[__${iter.index}__].name}" />
+                        </div>
+                        <div>
+                            <label for="numOfGroups${iter.index}">Number of Groups</label>
+                            <input type="number" id="numOfGroups${iter.index}" class="form-control" th:field="*{groups[__${iter.index}__].numOfGroups}" />
+                        </div>
+                        <div id="lectureGroupsContainer${iter.index}">
+                            <h4>Lecture Groups</h4>
+                            <div th:each="lectureGroup, lIter : ${groupOfGroup.lectureGroups}">
+                                <fieldset class="mb-3">
+                                    <legend><div th:text="|Lecture Group ${lIter.index + 1}|"></div></legend>
+                                    <button type="button" class="btn btn-danger" th:onclick="'removeLectureGroup(' + ${iter.index} + ', ' + ${lIter.index} + ')'">Remove Lecture Group</button>
+                                    <div>
+                                        <label for="lectureGroupName${iter.index}_${lIter.index}" class="form-label">Lecture Group Name</label>
+                                        <input type="text" id="lectureGroupName${iter.index}_${lIter.index}" class="form-control" th:field="*{groups[__${iter.index}__].lectureGroups[__${lIter.index}__].name}" />
+                                    </div>
+                                    <div>
+                                        <label for="numOfLecturePicks${iter.index}_${lIter.index}">Number of Lecture Picks</label>
+                                        <input type="number" id="numOfLecturePicks${iter.index}_${lIter.index}" class="form-control" th:field="*{groups[__${iter.index}__].lectureGroups[__${lIter.index}__].numOfLecturePicks}" />
+                                    </div>
+                                    <div>
+                                        <button type="button" class="btn btn-primary" th:onclick="'openSearchModal('+${iter.index}+', '+${lIter.index}+')'">Add Registered Lecture</button>
+                                        <button type="button" class="btn btn-primary" th:onclick="'openCustomLectureModal('+${iter.index}+', '+${lIter.index}+')'">Add Custom Lecture</button>
+                                        <!-- Display lectures here -->
+                                        <div id="lecturesContainer${iter.index}_${lIter.index}">
+                                            <div th:each="lecture, llIter : ${lectureGroup.lectureList}">
+                                                <div>
+                                                    <span th:text="${lecture.name}"></span>
+                                                    <button type="button" class="btn btn-danger" th:onclick="'removeLecture(' + ${iter.index} + ', ' + ${lIter.index} + ', ' + ${llIter.index} + ')'">Remove Lecture</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary" th:onclick="'addLectureGroup(' + ${iter.index} + ')'">Add Lecture Group</button>
+                    </fieldset>
+                </div>
+                <button type="button" class="btn btn-primary" th:onclick="'addGroup()'">Add Group</button>
+            </div>
+            <!-- Common settings -->
+            <fieldset>
+                <legend>Common Settings</legend>
+                <label for="numOfLeastEmptyDay">Minimum Number of Empty Days:</label>
+                <input type="number" id="numOfLeastEmptyDay" th:field="*{numOfLeastEmptyDay}" />
+                <br />
+                <label for="lectureStartTime">Lecture Start Time:</label>
+                <input type="time" id="lectureStartTime" th:field="*{lectureStartTime}" />
+                <br />
+                <label for="lectureEndTime">Lecture End Time:</label>
+                <input type="time" id="lectureEndTime" th:field="*{lectureEndTime}" />
+                <br />
+                <label>
+                    <input type="checkbox" th:field="*{calculateSaturday}" />
+                    Exclude Saturday from empty day calculation
+                </label>
+                <br />
+                <label>
+                    <input type="checkbox" th:field="*{excludeVideoLecture}" />
+                    Exclude video lectures from all conditions
+                </label>
+                <br />
+                <label>
+                    <input type="checkbox" th:field="*{excludeLivevideoLectureOnEmpty}" />
+                    Exclude live video lectures only from empty day conditions
+                </label>
+                <br />
+                <label>
+                    <input type="checkbox" th:field="*{excludeLivevideoLectureAll}" />
+                    Exclude live video lectures from all conditions (including empty day conditions)
+                </label>
+            </fieldset>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+
+        <!-- Add Group Modal -->
+        <div class="modal fade" id="addGroupModal" tabindex="-1" aria-labelledby="addGroupModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addGroupModalLabel">Add Group</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addGroupForm">
+                            <div class="mb-3">
+                                <label for="newGroupName" class="form-label">Group Name</label>
+                                <input type="text" class="form-control" id="newGroupName" />
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="addGroup()">Add Group</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            // Load saved state from localStorage
+            document.addEventListener('DOMContentLoaded', function() {
+                const savedData = localStorage.getItem('wizardData');
+                if (savedData) {
+                    const parsedData = JSON.parse(savedData);
+                    // Restore the groups from saved data
+                    parsedData.groups.forEach((group, index) => {
+                        addGroup(group.name, group.numOfGroups, group.lectureGroups);
+                    });
+                }
+            });
+
+            function addGroup(name = '', numOfGroups = 1, lectureGroups = [{name: 'Default Lecture Group', numOfLecturePicks: 1, lectures: []}]) {
+                const groupsContainer = document.getElementById('groupsContainer');
+                const newGroupIndex = groupsContainer.children.length;
+
+                // Create a new group fieldset
+                const newGroupFieldset = document.createElement('fieldset');
+                newGroupFieldset.classList.add('mb-4');
+                newGroupFieldset.innerHTML = `
+                <legend>Group ${newGroupIndex + 1}</legend>
+                <div class="mb-3">
+                    <button type="button" class="btn btn-danger" onclick="removeGroup(${newGroupIndex})">Remove Group</button>
+                </div>
+                <div>
+                    <label for="groupName${newGroupIndex}" class="form-label">Group Name</label>
+                    <input type="text" id="groupName${newGroupIndex}" name="groups[${newGroupIndex}].name" class="form-control" value="${name}" />
+                </div>
+                <div>
+                    <label for="numOfGroups${newGroupIndex}">Number of Groups</label>
+                    <input type="number" id="numOfGroups${newGroupIndex}" name="groups[${newGroupIndex}].numOfGroups" class="form-control" value="${numOfGroups}" />
+                </div>
+                <div id="lectureGroupsContainer${newGroupIndex}">
+                    <h4>Lecture Groups</h4>
+                </div>
+                <button type="button" class="btn btn-primary" onclick="addLectureGroup(${newGroupIndex})">Add Lecture Group</button>
+            `;
+                groupsContainer.appendChild(newGroupFieldset);
+
+                // Add default lecture group if none provided
+                lectureGroups.forEach((lectureGroup, lIndex) => {
+                    addLectureGroup(newGroupIndex, lectureGroup.name, lectureGroup.numOfLecturePicks, lectureGroup.lectures);
+                });
+            }
+
+            function removeGroup(index) {
+                const groupsContainer = document.getElementById('groupsContainer');
+                groupsContainer.removeChild(groupsContainer.children[index]);
+                saveState();
+            }
+
+            // Function to add a lecture group
+            function addLectureGroup(groupIndex, name = '', numOfLecturePicks = 1, lectures = []) {
+                const container = document.getElementById(`lectureGroupsContainer${groupIndex}`);
+                if (!container) {
+                    console.error(`Element with ID lectureGroupsContainer${groupIndex} not found`);
+                    return;
+                }
+
+                const newLectureGroupIndex = container.children.length;
+
+                // Create a new lecture group fieldset
+                const newLectureGroupFieldset = document.createElement('fieldset');
+                newLectureGroupFieldset.classList.add('mb-3');
+                newLectureGroupFieldset.innerHTML = `
+                <legend>Lecture Group ${newLectureGroupIndex + 1}</legend>
+                <button type="button" class="btn btn-danger" onclick="removeLectureGroup(${groupIndex}, ${newLectureGroupIndex})">Remove Lecture Group</button>
+                <div>
+                    <label for="lectureGroupName${groupIndex}_${newLectureGroupIndex}" class="form-label">Lecture Group Name</label>
+                    <input type="text" id="lectureGroupName${groupIndex}_${newLectureGroupIndex}" name="groups[${groupIndex}].lectureGroups[${newLectureGroupIndex}].name" class="form-control" value="${name}" />
+                </div>
+                <div>
+                    <label for="numOfLecturePicks${groupIndex}_${newLectureGroupIndex}">Number of Lecture Picks</label>
+                    <input type="number" id="numOfLecturePicks${groupIndex}_${newLectureGroupIndex}" name="groups[${groupIndex}].lectureGroups[${newLectureGroupIndex}].numOfLecturePicks" class="form-control" value="${numOfLecturePicks}" />
+                </div>
+                <button type="button" class="btn btn-primary" onclick="openSearchModal(${groupIndex}, ${newLectureGroupIndex})">Add Registered Lecture</button>
+                <button type="button" class="btn btn-primary" onclick="openCustomLectureModal(${groupIndex}, ${newLectureGroupIndex})">Add Custom Lecture</button>
+                <div id="lecturesContainer${groupIndex}_${newLectureGroupIndex}">
+                    <!-- Lectures will be added here -->
+                </div>
+            `;
+                container.appendChild(newLectureGroupFieldset);
+
+                // Add default lectures if any
+                lectures.forEach((lecture, llIndex) => {
+                    addLecture(groupIndex, newLectureGroupIndex, lecture.name);
+                });
+            }
+
+            function removeLectureGroup(groupIndex, lectureGroupIndex) {
+                const container = document.getElementById(`lectureGroupsContainer${groupIndex}`);
+                if (container) {
+                    container.removeChild(container.children[lectureGroupIndex]);
+                    saveState();
+                } else {
+                    console.error(`Element with ID lectureGroupsContainer${groupIndex} not found`);
+                }
+            }
+
+            // Function to add a lecture
+            function addLecture(groupIndex, lectureGroupIndex, name = '') {
+                const container = document.getElementById(`lecturesContainer${groupIndex}_${lectureGroupIndex}`);
+                if (container) {
+                    const newLectureIndex = container.children.length;
+
+                    // Create a new lecture element
+                    const newLectureDiv = document.createElement('div');
+                    newLectureDiv.innerHTML = `
+                    <span>Lecture ${newLectureIndex + 1}: ${name}</span>
+                    <button type="button" class="btn btn-danger" onclick="removeLecture(${groupIndex}, ${lectureGroupIndex}, ${newLectureIndex})">Remove Lecture</button>
+                `;
+                    container.appendChild(newLectureDiv);
+                } else {
+                    console.error(`Element with ID lecturesContainer${groupIndex}_${lectureGroupIndex} not found`);
+                }
+            }
+
+            function removeLecture(groupIndex, lectureGroupIndex, lectureIndex) {
+                const container = document.getElementById(`lecturesContainer${groupIndex}_${lectureGroupIndex}`);
+                if (container) {
+                    container.removeChild(container.children[lectureIndex]);
+                    saveState();
+                } else {
+                    console.error(`Element with ID lecturesContainer${groupIndex}_${lectureGroupIndex} not found`);
+                }
+            }
+
+            // Function to open the search modal
+            function openSearchModal(groupIndex, lectureGroupIndex) {
+                fetch('/search')
+                    .then(response => response.json())
+                    .then(data => {
+                        const searchModal = document.getElementById('searchModal');
+                        searchModal.innerHTML = `
+                        <h3>Search Registered Lectures</h3>
+                        <!-- Assuming data.searchEnrolledLecture contains necessary information -->
+                        <input type="text" id="searchInput" placeholder="Search for lectures...">
+                        <button type="button" onclick="searchRegisteredLecture(${groupIndex}, ${lectureGroupIndex})">Search</button>
+                        <ul id="searchResults"></ul>
+                    `;
+                        // Show the modal (Bootstrap or custom implementation)
+                        // Example with Bootstrap:
+                        const modal = new bootstrap.Modal(searchModal);
+                        modal.show();
+                    });
+            }
+
+            // Function to search registered lectures
+            function searchRegisteredLecture(groupIndex, lectureGroupIndex) {
+                const query = document.getElementById('searchInput').value;
+                fetch('/search', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ searchEnrolledLecture: { query } })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        const resultsContainer = document.getElementById('searchResults');
+                        resultsContainer.innerHTML = '';
+                        data.result.forEach(lecture => {
+                            const listItem = document.createElement('li');
+                            listItem.textContent = lecture.name;
+                            listItem.onclick = () => {
+                                addLecture(groupIndex, lectureGroupIndex, lecture.name);
+                                // Close the modal (Bootstrap or custom implementation)
+                                const searchModal = document.getElementById('searchModal');
+                                const modal = bootstrap.Modal.getInstance(searchModal);
+                                modal.hide();
+                            };
+                            resultsContainer.appendChild(listItem);
+                        });
+                    });
+            }
+
+            // Function to open the custom lecture modal
+            function openCustomLectureModal(groupIndex, lectureGroupIndex) {
+                fetch('/addCustomLecture')
+                    .then(response => response.json())
+                    .then(data => {
+                        const customLectureModal = document.getElementById('customLectureModal');
+                        customLectureModal.innerHTML = `
+                        <h3>Add Custom Lecture</h3>
+                        <label for="customLectureName">Lecture Name</label>
+                        <input type="text" id="customLectureName">
+                        <label for="customLectureClassHours">Class Hours (comma-separated times)</label>
+                        <input type="text" id="customLectureClassHours">
+                        <button type="button" onclick="addCustomLecture(${groupIndex}, ${lectureGroupIndex})">Add Custom Lecture</button>
+                    `;
+                        // Show the modal (Bootstrap or custom implementation)
+                        // Example with Bootstrap:
+                        const modal = new bootstrap.Modal(customLectureModal);
+                        modal.show();
+                    });
+            }
+
+            // Function to add a custom lecture
+            function addCustomLecture(groupIndex, lectureGroupIndex) {
+                const name = document.getElementById('customLectureName').value;
+                const classHours = document.getElementById('customLectureClassHours').value.split(',').map(time => parseInt(time.trim(), 10));
+
+                fetch('/addCustomLecture', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name,
+                        classHours
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        addLecture(groupIndex, lectureGroupIndex, data.customLecture.name);
+                        // Close the modal (Bootstrap or custom implementation)
+                        const customLectureModal = document.getElementById('customLectureModal');
+                        const modal = bootstrap.Modal.getInstance(customLectureModal);
+                        modal.hide();
+                    });
+            }
+
+            function saveState() {
+                const groupsContainer = document.getElementById('groupsContainer');
+                const wizardData = {
+                    groups: Array.from(groupsContainer.children).map((fieldset, index) => {
+                        return {
+                            name: fieldset.querySelector(`input[name="groups[${index}].name"]`).value,
+                            numOfGroups: fieldset.querySelector(`input[name="groups[${index}].numOfGroups"]`).value,
+                            lectureGroups: Array.from(fieldset.querySelector(`#lectureGroupsContainer${index}`).children).map((lectureGroupFieldset, lIndex) => {
+                                return {
+                                    name: lectureGroupFieldset.querySelector(`input[name="groups[${index}].lectureGroups[${lIndex}].name"]`).value,
+                                    numOfLecturePicks: lectureGroupFieldset.querySelector(`input[name="groups[${index}].lectureGroups[${lIndex}].numOfLecturePicks"]`).value,
+                                    lectures: Array.from(lectureGroupFieldset.querySelector(`#lecturesContainer${index}_${lIndex}`).children).map((lectureDiv, llIndex) => {
+                                        return {
+                                            name: lectureDiv.querySelector('span').textContent,
+                                        };
+                                    })
+                                };
+                            })
+                        };
+                    })
+                };
+                localStorage.setItem('wizardData', JSON.stringify(wizardData));
+            }
+        </script>
+        </body>
+    </main>
+</div>
+</body>
+</html>

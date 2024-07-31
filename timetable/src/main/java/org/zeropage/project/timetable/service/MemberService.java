@@ -4,6 +4,8 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.NonUniqueResultException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zeropage.project.timetable.domain.Member;
 import org.zeropage.project.timetable.repository.MemberRepository;
 import org.zeropage.project.timetable.repository.TimetableRepository;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -40,13 +44,16 @@ public class MemberService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+        Member member;
         try {
-            return memberRepository.findByUserNameAndUserPw(userName);
+            member = memberRepository.findByUserNameAndUserPw(userName);
             //놀랍게도 평문전송이 맞음
         } catch (NoResultException | EmptyResultDataAccessException e) {
             throw new NoResultException("ID 또는 비밀번호가 틀렸습니다.");
             //둘 중 뭐가 틀렸는지 모르도록 String 변경
         }
+        return new User(member.getUsername(), member.getPassword(),
+                List.of(new SimpleGrantedAuthority("USER")));
     }
 
     @Transactional

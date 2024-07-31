@@ -27,9 +27,9 @@ public class LectureService {
         return result;
     }
 
-    public List<Lecture> search(SearchEnrolledLecture option){
-        List<Lecture> result = lectureRepository.find(option);
-        for (Lecture lecture : result)
+    public List<RegisteredLecture> search(SearchEnrolledLecture option){
+        List<RegisteredLecture> result = lectureRepository.find(option);
+        for (RegisteredLecture lecture : result)
             lecture.setClassHoursByList();
         return result;
     }
