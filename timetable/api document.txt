@@ -1,7 +1,3 @@
-아래 api 설계를 보고 웹페이지를 만들어줄 수 있어?
-기본 설정은 thymeleaf인데 부트스트랩이나 바닐라js같은건 전부 사용 가능해
-thymeleaf로는 구현하지 못하고 다른 언어로만 구현해야 한다면 다른 언어를 쓸 수는 있는데, 뭐 썼는지만 말해줘
-
 Type define Sheet
 
 Name: Lecture
@@ -121,7 +117,6 @@ Item: {
 }
 
 API 문서
-기본적으로 모든 값은 thymeleaf의 model을 통해 전달되나, 필요하다면 API를 사용할 수 있음
 
 EndPoint: GET /wizard/settings
 Description: 시간표 마법사 설정(양식 반환), GroupOfGroup을 표시할 때는 그룹을 추가하는 버튼은 물론(클릭 시 GroupOfGroup 객체가 하나 더 생성되어야 하며, 이 객체는 하나의 LectureGroup 객체를 가지고 있음),
