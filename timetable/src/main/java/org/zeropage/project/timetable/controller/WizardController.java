@@ -12,7 +12,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("wizard")
+@RequestMapping("/wizard")
 public class WizardController {
 
     @GetMapping("/settings")

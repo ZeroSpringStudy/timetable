@@ -25,12 +25,15 @@ public class WebSecurityConfig {
                     authorizeRequests
                             .requestMatchers("/timetable/byMember/**").hasRole("USER")
                             .requestMatchers("/result/save").hasRole("USER")
+                            .requestMatchers("/api/timetable/byMember/**").hasRole("USER")
+                            .requestMatchers("/api/result/save").hasRole("USER")
                             .requestMatchers("/user/resign").hasRole("USER")
                             .anyRequest().permitAll();
                 })
                 .formLogin((formLogin) -> {
                     formLogin
                             .loginPage("/user/login")
+                            .loginProcessingUrl("/user/login")
                             .defaultSuccessUrl("/");
                 })
                 .logout((logout) -> {
